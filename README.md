@@ -66,8 +66,14 @@ const newBundle = (lazyComponent, LoadingComponent) => props => (
 		}
 	/>
 );
+const createBundle = mod => newBundle(mod, Loading);
+// --------------------------------
+import Side from 'bundle-loader?lazy&name=side!./containers/Side';
+// ...
+<Route component={createBundle(Side)} />
+
 ```
-其中`props`就包含路由地址 pathname
+其中 在 `containers/Side` 的 `props` 属性就包含 路由地址 pathname，以下是 `props` 对象内容
 ```json
 {
 	"history": {
@@ -95,5 +101,11 @@ const newBundle = (lazyComponent, LoadingComponent) => props => (
 
 ## 生产坏境部署
 
-1. `npm run build`
-2. 拷贝dist文件夹内容至服务器即可
+1. `npm install`
+若在前面运行过此命令, 可跳过
+2. `npm run app`
+3. 拷贝dist文件夹内容至服务器即可
+
+### `重要说明`
+
+前面说到的 proxy 转发设置，一定要在 `开发坏境` `开发坏境` 下才生效，生产环境转发设置就没用了，所以请求会报错的
