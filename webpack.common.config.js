@@ -15,7 +15,7 @@ commonConfig = {
 		path: path.join(__dirname, './dist'),
 		filename: '[name].[chunkhash].js',
 		chunkFilename: '[name].[chunkhash].js',
-		publicPath: '/'
+		publicPath: './'
 	},
 	module: {
 		postLoaders: [

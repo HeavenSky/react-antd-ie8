@@ -10,6 +10,7 @@
 	* webpack配置、package.json 中增加 [antd 1.x](http://1x.ant.design) 和 less 支持
 		* 引入 [antd 1.x](http://1x.ant.design) 本想用最新的, 但是 `2.x 不支持 IE8`
 		* 引入 [babel-plugin-import](https://www.npmjs.com/package/babel-plugin-import), 并更改 `.babelrc`
+	* webpack.common.config.js 中 output 绝对路径改相对路径
 	* webpack-dev-server 增加在 webpack 中的参数配置,增加proxy请求转发
 		* 发现一个坑, 在IE8中不支持"inline:true"
 * cdn 源两个 [cdnjs](https://cdnjs.com) [bootcdn](http://www.bootcdn.cn/)
@@ -18,7 +19,7 @@
 	* 吐槽一下 "match-media" 两个cdn都没有，但是没有的话 `ant design` 又报错。于是网上找了好久,没找到可靠的,后在 https://www.npmjs.com 里找到，于是通过加入 dependencies, 然后在 index.js 中 import (不知道有没有更好的解决办法)
 * dependencies 查询和资料参考来源 [官网](https://www.npmjs.com)
 * 出于增加编译速度的考虑 将 `antd.min.css` `jquery.min.js` `json2.min.js` 放到 index.html 中用 cdn 引入
-* 对于 ant design 的表格 `表头和列同时固定的时候` 报错 `IE8 不支持 onScroll 事件`, 我利用 jquery 做了如下兼容处理
+* 对于 ant design 的表格 `表头和列同时固定的时候` 报错 `IE8 不支持 onScroll 事件`, 利用 jquery 做了如下兼容处理
 ```js
 const verIE = e => {
 	// 此方法只能检查IE版本 IE11以下 或 IE文档模式11以下
