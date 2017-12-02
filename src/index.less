@@ -1,0 +1,41 @@
+.danger,
+.primary {
+    cursor: pointer;
+}
+
+.danger {
+    color: #f04134;
+    &:hover {
+        color: #f08268;
+    }
+}
+
+.primary {
+    color: #108ee9;
+    &:hover {
+        color: #49a9ee;
+    }
+}
+
+.ant-table table {
+    th,
+    td {
+        padding: 8px;
+        line-height: 30px;
+        border-left: 1px solid #d9d9d9;
+        text-align: center;
+        max-width: 120px;
+        min-width: 120px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        .anticon {
+            font-size: 22px;
+            margin-left: 6px;
+            vertical-align: middle;
+        }
+    }
+    th {
+        font-weight: bold;
+    }
+}
