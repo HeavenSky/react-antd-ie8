@@ -84,7 +84,7 @@ export default class Hello extends Component {
 			<div>
 				<span>Hello...</span>
 				<Button type='primary' disabled={loading} onClick={this.load}>重新加载</Button>
-				<Table loading={loading} columns={this.cols(list)} dataSource={list} scroll={{ x: 900, y: 320 }} />
+				<Table loading={loading} columns={this.cols(list)} dataSource={list} scroll={{ x: 800, y: 200 }} />
 				<RangePicker />
 				<RangePicker showTime format='yyyy/MM/dd HH:mm:ss' />
 			</div>

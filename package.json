@@ -6,7 +6,7 @@
 		"dev": "webpack --config webpack.dev.config.js",
 		"app": "webpack --config webpack.config.js"
 	},
-	"description": "react antd ie8",
+	"description": "study react antd ie8",
 	"main": "index.js",
 	"author": "HeavenSky",
 	"license": "MIT",
@@ -39,7 +39,6 @@
 	},
 	"dependencies": {
 		"antd": "^1.11.6",
-		"axios": "^0.16.2",
 		"es3ify-webpack-plugin": "^0.0.1",
 		"es5-shim": "^4.5.9",
 		"export-from-ie8": "^1.0.5",
