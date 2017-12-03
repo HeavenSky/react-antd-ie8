@@ -37,24 +37,23 @@ commonConfig = {
 		new HtmlWebpackPlugin({
 			filename: 'index.html',
 			template: path.join(__dirname, 'src/index.html')
+		}),/*
+		new webpack.HashedModuleIdsPlugin(),
+		new webpack.optimize.CommonsChunkPlugin({
+			name: 'vendor'
 		}),
-		// new webpack.HashedModuleIdsPlugin(),
-		// new webpack.optimize.CommonsChunkPlugin({
-		//     name: 'vendor'
-		// }),
-		// new webpack.optimize.CommonsChunkPlugin({
-		//     name: 'runtime'
-		// }),
+		new webpack.optimize.CommonsChunkPlugin({
+			name: 'runtime'
+		}),*/
 		new es3ifyPlugin()
 	],
-
 	resolve: {
 		alias: {
-			pages: path.join(__dirname, 'src/pages'),
+			actions: path.join(__dirname, 'src/actions'),
 			components: path.join(__dirname, 'src/components'),
-			router: path.join(__dirname, 'src/router'),
-			actions: path.join(__dirname, 'src/redux/actions'),
-			reducers: path.join(__dirname, 'src/redux/reducers')
+			constants: path.join(__dirname, 'src/constants'),
+			containers: path.join(__dirname, 'src/containers'),
+			reducers: path.join(__dirname, 'src/reducers')
 		}
 	}
 };

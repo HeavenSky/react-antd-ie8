@@ -21,8 +21,10 @@ const devConfig = {
 	devServer: {
 		contentBase: path.join(__dirname, './dist'),
 		historyApiFallback: true,
+		inline: false, // ie8 不支持 会报错'不支持indexOf'
 		colors: true,
-		inline: false, // ie8 不支持 会报错"不支持indexOf"
+		open: true,
+		publicPath: '/',
 		host: 'localhost',
 		port: 8888,
 		proxy: {
