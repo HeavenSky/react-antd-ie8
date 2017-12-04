@@ -1,8 +1,11 @@
 export const NAV_COL = [
-	{ key: 'home', title: '首页' },
-	{ key: 'test', title: '测试' },
-	{ key: 'hello', title: '你好' },
-	{ key: 'user', title: '用户' },
+	{ key: 'home', title: '首页', icon: 'home', },
+	{ key: 'appstore', title: '应用商店', icon: 'appstore', disabled: true, },
+	{ key: 'hello', title: '你好', icon: 'smile', },
+	{ key: 'laptop', title: '平板电脑', icon: 'laptop', disabled: true, },
+	{ key: 'test', title: '测试', icon: 'notification', },
+	{ key: 'inbox', title: '收件箱', icon: 'inbox', disabled: true, },
+	{ key: 'user', title: '用户', icon: 'user', },
 ];
 export const THEBUDDY_COL = [
 	{ title: 'ID', dataIndex: 'id', key: 'id', },

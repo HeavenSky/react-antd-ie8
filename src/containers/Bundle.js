@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import Loading from './Loading';
+import Loading from '../components/Loading';
 
 class Bundle extends Component {
 	componentWillMount() {
@@ -28,15 +28,15 @@ class Bundle extends Component {
 	}
 }
 
-const newBundle = (lazyComponent, LoadingComponent) => props => (
-	<Bundle
+const newBundle = (lazyComponent, LoadingComponent) =>
+	props => <Bundle
 		load={lazyComponent}
 		fn={
-			LoadedComponent => LoadedComponent ?
-				<LoadedComponent {...props} /> : <LoadingComponent {...props} />
+			WaitingComponent => WaitingComponent ?
+				<WaitingComponent {...props} /> :
+				<LoadingComponent {...props} />
 		}
-	/>
-);
+	/>;
 
 const createBundle = mod => newBundle(mod, Loading);
 

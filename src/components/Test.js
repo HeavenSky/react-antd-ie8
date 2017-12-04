@@ -38,7 +38,6 @@ export default class Test extends Component {
 		const { list, type, lang, loading } = this.state;
 		return (
 			<div>
-				<span>Test...</span>
 				<Carousel autoplay>
 					<div><h3>1</h3></div>
 					<div><h3>2</h3></div>

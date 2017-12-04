@@ -63,8 +63,8 @@ export default class Hello extends Component {
 			title: '操作',
 			key: 'action',
 			render: (v, record, idx) => <span>
-				<Icon type="info-circle primary" />
-				<Icon type="check-circle primary" />
+				<Icon type='info-circle primary' />
+				<Icon type='check-circle primary' />
 				<Icon
 					type='cross-circle danger'
 					onClick={e =>
@@ -82,11 +82,10 @@ export default class Hello extends Component {
 		const { list, loading } = this.state;
 		return (
 			<div>
-				<span>Hello...</span>
-				<Button type='primary' disabled={loading} onClick={this.load}>重新加载</Button>
-				<Table loading={loading} columns={this.cols(list)} dataSource={list} scroll={{ x: 800, y: 200 }} />
 				<RangePicker />
 				<RangePicker showTime format='yyyy/MM/dd HH:mm:ss' />
+				<Button type='primary' disabled={loading} onClick={this.load}>重新加载</Button>
+				<Table loading={loading} columns={this.cols(list)} dataSource={list} scroll={{ x: 800, y: 200 }} />
 			</div>
 		);
 	}
