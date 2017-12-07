@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Carousel, Select, Table } from 'antd';
+
 import { THEBUDDY_COL } from '../constants/columns';
 
 const Option = Select.Option;
@@ -8,7 +9,6 @@ const rowSelection = {
 	onSelect(record, selected, selectedRows) { },
 	onSelectAll(selected, selectedRows, changeRows) { },
 };
-
 export default class Test extends Component {
 	componentWillMount() {
 		this.state = {

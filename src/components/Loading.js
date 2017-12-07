@@ -1,4 +1,3 @@
 import React from 'react';
 
-const Loading = props => <div>Loading...</div>;
-export default Loading;
+export default  props => <div>Loading...</div>

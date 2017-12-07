@@ -6,7 +6,7 @@ export const NAV_COL = [
 	{ key: 'test', title: '测试', icon: 'notification', },
 	{ key: 'inbox', title: '收件箱', icon: 'inbox', disabled: true, },
 	{ key: 'user', title: '用户', icon: 'user', },
-];
+]
 export const THEBUDDY_COL = [
 	{ title: 'ID', dataIndex: 'id', key: 'id', },
 	{ title: '分类', dataIndex: 'type', key: 'type', },
@@ -14,4 +14,4 @@ export const THEBUDDY_COL = [
 	{ title: '主题', dataIndex: 'title', key: 'title', },
 	{ title: '内容', dataIndex: 'content', key: 'content', },
 	{ title: '日期', dataIndex: 'date', key: 'date', },
-];
+]

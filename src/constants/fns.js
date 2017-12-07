@@ -5,4 +5,4 @@ export const verIE = e => {
 		const mod = document.documentMode;
 		return { ver, mod };
 	}
-};
+}
