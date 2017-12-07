@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 /*
 import { Route } from 'react-router-dom';
-import Loading from '../components/Loading';
-import Home from 'bundle-loader?lazy&name=home!../components/Home';
+import Loading from './components/Loading';
+import Home from 'bundle-loader?lazy&name=home!./components/Home';
 
-<Route component={newBundle(Home, Loading)} />
+<Route component={newBundle(Loading)(Home)} />
 1. 在 Home 组件执行报错的时候整体页面依旧可以正常加载,只是切换到加载 Loading 组件
 3. 经过 bundle-loader 的js会编译成一个独立的js文件进行按需加载,若页面不调用js将不加载
 4. package.json 中需添加依赖 bundle-loader
@@ -13,7 +13,7 @@ import Home from 'bundle-loader?lazy&name=home!../components/Home';
 */
 class Bundle extends Component {
 	componentWillMount() {
-		// short for "module" but that's a keyword in js, so "mod"
+		// short for 'module' but that's a keyword in js, so 'mod'
 		this.state = { mod: null };
 		this.load(this.props.callback);
 	}

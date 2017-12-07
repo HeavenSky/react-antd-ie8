@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
-import { Menu, Icon } from 'antd';
 import { Link } from 'react-router-dom';
-
+import { Menu, Icon } from 'antd';
 import { NAV_COL } from '../constants/columns';
 
-// 根据不同的路由显示状态
 export default class Side extends Component {
 	componentWillMount() {
 		const key = this.props.location.pathname.slice(1);

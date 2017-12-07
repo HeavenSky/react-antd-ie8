@@ -24,9 +24,6 @@ const publicConfig = {
 			compress: { screw_ie8: false, },
 			output: { screw_ie8: false },
 		}),
-		new webpack.DefinePlugin({
-			'process.env': { 'NODE_ENV': JSON.stringify('production') },
-		}),
 		new ExtractTextPlugin('[name].[contenthash:5].css'),
 	]
 };

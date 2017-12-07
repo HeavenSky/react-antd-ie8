@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
-import { Carousel, Select, Table } from 'antd';
-
+import { Select, Table } from 'antd';
 import { THEBUDDY_COL } from '../constants/columns';
 
-const Option = Select.Option;
 const rowSelection = {
 	onChange(selectedRowKeys, selectedRows) { },
 	onSelect(record, selected, selectedRows) { },
@@ -38,22 +36,16 @@ export default class Test extends Component {
 		const { list, type, lang, loading } = this.state;
 		return (
 			<div>
-				<Carousel autoplay>
-					<div><h3>1</h3></div>
-					<div><h3>2</h3></div>
-					<div><h3>3</h3></div>
-					<div><h3>4</h3></div>
-				</Carousel>
 				类型：
 				<Select disabled={loading} value={type} onChange={this.switch('type')}>
-					<Option value='news'>新闻</Option>
-					<Option value='case'>案例</Option>
-					<Option value='info'>资讯</Option>
+					<Select.Option value='news'>新闻</Select.Option>
+					<Select.Option value='case'>案例</Select.Option>
+					<Select.Option value='info'>资讯</Select.Option>
 				</Select>
 				语言：
 				<Select disabled={loading} value={lang} onChange={this.switch('lang')}>
-					<Option value='cn'>中文</Option>
-					<Option value='en'>英文</Option>
+					<Select.Option value='cn'>中文</Select.Option>
+					<Select.Option value='en'>英文</Select.Option>
 				</Select>
 				<Table rowSelection={rowSelection} loading={loading} columns={THEBUDDY_COL} dataSource={list} />
 			</div>

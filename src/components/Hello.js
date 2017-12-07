@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import { DatePicker, Button, Icon, Table } from 'antd';
+import { verIE } from '../utils/fns';
 
-import { verIE } from '../constants/fns';
-
-const RangePicker = DatePicker.RangePicker;
 export default class Hello extends Component {
 	componentWillMount() {
 		this.state = {
@@ -81,8 +79,9 @@ export default class Hello extends Component {
 		const { list, loading } = this.state;
 		return (
 			<div>
-				<RangePicker />
-				<RangePicker showTime format='yyyy/MM/dd HH:mm:ss' />
+				<DatePicker />
+				<DatePicker.RangePicker />
+				<DatePicker.RangePicker showTime format='yyyy/MM/dd HH:mm:ss' />
 				<Button type='primary' disabled={loading} onClick={this.load}>重新加载</Button>
 				<Table loading={loading} columns={this.cols(list)} dataSource={list} scroll={{ x: 800, y: 200 }} />
 			</div>
