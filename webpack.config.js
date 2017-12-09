@@ -10,22 +10,33 @@ const publicConfig = {
 	module: {
 		loaders: [{
 			test: /\.css$/,
-			loader: ExtractTextPlugin.extract('style-loader', 'css-loader'),
+			loader: ExtractTextPlugin.extract('style-loader', 'css-loader', 'postcss-loader'),
 		}, {
 			test: /\.less$/,
-			loader: ExtractTextPlugin.extract('style-loader', 'css-loader', 'less-loader'),
-		}]
+			loader: ExtractTextPlugin.extract('style-loader', 'css-loader', 'postcss-loader', 'less-loader'),
+		}],
 	},
 	plugins: [
-		new CleanWebpackPlugin(['dist/*.*']),
+		new CleanWebpackPlugin([
+			'dist/*.*',
+			'dist/css',
+			'dist/img',
+			'dist/js',
+		]),
 		new UglifyJSPlugin({
 			mangle: { screw_ie8: false },
 			mangleProperties: { screw_ie8: false, },
 			compress: { screw_ie8: false, },
 			output: { screw_ie8: false },
 		}),
-		new ExtractTextPlugin('[name].[contenthash:5].css'),
-	]
+		new webpack.DefinePlugin({
+			'process.env': { 'NODE_ENV': JSON.stringify('production') },
+		}),
+		new ExtractTextPlugin({
+			filename: 'css/[name].[contenthash:5].css',
+			allChunks: true,
+		}),
+	],
 };
 
 module.exports = merge(commonConfig, publicConfig);

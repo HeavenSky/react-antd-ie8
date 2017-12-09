@@ -12,11 +12,12 @@ import Home from 'bundle-loader?lazy&name=home!./components/Home';
 6. 正常情况不使用 bundle-loader 加载,最后是一个js文件,使用之后变成多个js文件
 */
 class Bundle extends Component {
-	componentWillMount() {
+	constructor(props) {
+		super(props);
 		// short for 'module' but that's a keyword in js, so 'mod'
 		this.state = { mod: null };
-		this.load(this.props.callback);
 	}
+	componentDidMount = () => this.load(this.props.callback)
 	componentWillReceiveProps = ({ callback }) =>
 		this.props.callback !== callback && this.load(callback)
 	load = callback => {

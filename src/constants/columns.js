@@ -8,10 +8,10 @@ export const NAV_COL = [
 	{ key: 'user', title: '用户', icon: 'user', },
 ]
 export const THEBUDDY_COL = [
-	{ title: 'ID', dataIndex: 'id', key: 'id', },
-	{ title: '分类', dataIndex: 'type', key: 'type', },
-	{ title: '语言', dataIndex: 'lang', key: 'lang', },
-	{ title: '主题', dataIndex: 'title', key: 'title', },
-	{ title: '内容', dataIndex: 'content', key: 'content', },
-	{ title: '日期', dataIndex: 'date', key: 'date', },
+	{ key: 'id', title: 'ID', dataIndex: 'id', },
+	{ key: 'date', title: '日期', dataIndex: 'date', },
+	{ key: 'type', title: '分类', dataIndex: 'type', },
+	{ key: 'lang', title: '语言', dataIndex: 'lang', },
+	{ key: 'title', title: '主题', dataIndex: 'title', },
+	{ key: 'content', title: '内容', dataIndex: 'content', },
 ]

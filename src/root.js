@@ -1,5 +1,4 @@
 import React from 'react';
-import MatchMedia from 'match-media';
 import { HashRouter, Route, Switch } from 'react-router-dom';
 
 import Side from 'bundle-loader?lazy&name=side!./components/Side';

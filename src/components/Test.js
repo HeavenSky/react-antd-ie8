@@ -8,21 +8,22 @@ const rowSelection = {
 	onSelectAll(selected, selectedRows, changeRows) { },
 };
 export default class Test extends Component {
-	componentWillMount() {
+	constructor(props) {
+		super(props);
 		this.state = {
 			list: [],
 			type: 'news',
 			lang: 'cn',
 			loading: false,
 		};
-		this.load();
 	}
+	componentDidMount = () => this.load()
 	load = () => {
 		this.setState({ loading: true });
 		const { type, lang } = this.state;
 		$.ajax({
 			url: '/action/ajax.php',
-			data: { type, lang, show: 'json' }
+			data: { type, lang, show: 'json', },
 		}).done(
 			({ data, info, success, type }) =>
 				success && data && data.length && this.setState({ list: data })

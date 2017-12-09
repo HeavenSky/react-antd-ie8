@@ -1,12 +1,13 @@
 const path = require('path');
+const webpack = require('webpack');
 const merge = require('webpack-merge');
 
 const commonConfig = require('./webpack.common.config.js');
 const devConfig = {
 	devtool: 'cheap-module-eval-source-map',
 	output: {
-		/*这里本来应该是[chunkhash]的，但是由于[chunkhash]和react-hot-loader不兼容。只能妥协*/
-		filename: '[name].[hash].js'
+		/*这里本来应该是[chunkhash]的，但是由于[chunkhash]和webpack-dev-server --hot不兼容。只能妥协*/
+		filename: 'js/[name].[hash:5].js',
 	},
 	module: {
 		loaders: [{
@@ -14,13 +15,18 @@ const devConfig = {
 			loaders: ['style-loader', 'css-loader', 'postcss-loader'],
 		}, {
 			test: /\.less$/,
-			loaders: ['style-loader', 'css-loader', 'less-loader', 'postcss-loader'],
-		}]
+			loaders: ['style-loader', 'css-loader', 'postcss-loader', 'less-loader'],
+		}],
 	},
+	plugins: [
+		new webpack.DefinePlugin({
+			'process.env': { 'NODE_ENV': JSON.stringify('development') },
+		}),
+	],
 	devServer: {
 		contentBase: path.join(__dirname, './dist'),
 		historyApiFallback: true,
-		inline: false, // ie8不支持true 会报错'不支持indexOf'
+		inline: false, // ie9以下不支持会报错
 		colors: true,
 		open: true,
 		publicPath: '/',
@@ -37,9 +43,9 @@ const devConfig = {
 				secure: false,
 				changeOrigin: true,
 				pathRewrite: { '^/askme': '/consultant' },
-			}
-		}
-	}
+			},
+		},
+	},
 };
 
 module.exports = merge(commonConfig, devConfig);

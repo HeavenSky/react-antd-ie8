@@ -3,14 +3,15 @@ import { DatePicker, Button, Icon, Table } from 'antd';
 import { verIE } from '../utils/fns';
 
 export default class Hello extends Component {
-	componentWillMount() {
+	constructor(props) {
+		super(props);
 		this.state = {
 			list: [],
 			loading: false,
 		};
-		this.load();
 	}
-	componentDidMount() {
+	componentDidMount = () => this.load()
+	componentDidUpdate = () => {
 		const res = verIE(); // 获取IE版本信息,返回值 {ver:IE版本,mod:文档模式版本}
 		if (res) {
 			if (res.ver < 9 || res.mod < 9) {

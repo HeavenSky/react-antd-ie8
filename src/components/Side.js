@@ -4,8 +4,9 @@ import { Menu, Icon } from 'antd';
 import { NAV_COL } from '../constants/columns';
 
 export default class Side extends Component {
-	componentWillMount() {
-		const key = this.props.location.pathname.slice(1);
+	constructor(props) {
+		super(props);
+		const key = props.location.pathname.slice(1);
 		this.state = this.check(key) ? { key } : { key: 'home' };
 	}
 	componentWillReceiveProps(nextProps) {

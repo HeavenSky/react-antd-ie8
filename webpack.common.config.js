@@ -1,20 +1,22 @@
 const path = require('path');
 const webpack = require('webpack');
 const es3ifyPlugin = require('es3ify-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 commonConfig = {
 	entry: {
 		app: [
-			'es5-shim', 'es5-shim/es5-sham',
+			'es5-shim',
+			'es5-shim/es5-sham',
 			'babel-polyfill',
 			path.join(__dirname, 'src/index.js'),
-		]
+		],
 	},
 	output: {
 		path: path.join(__dirname, './dist'),
-		filename: '[name].[chunkhash].js',
-		chunkFilename: '[name].[chunkhash].js',
+		filename: 'js/[name].[chunkhash:5].js',
+		chunkFilename: 'js/[name].[chunkhash:5].js',
 		publicPath: './',
 	},
 	module: {
@@ -28,17 +30,18 @@ commonConfig = {
 			include: path.join(__dirname, 'src'),
 		}, {
 			test: /\.(bmp|gif|ico|jpg|png)$/,
-			loader: 'url-loader?limit=3072',
-		}]
+			loader: 'url-loader?limit=3072&name=img/[name].[hash:5].[ext]',
+		}],
 	},
 	plugins: [
+		new CopyWebpackPlugin([{
+			from: path.join(__dirname, 'src/static'),
+			to: 'static',
+		}]),
 		new HtmlWebpackPlugin({
 			filename: 'index.html',
 			template: path.join(__dirname, 'src/index.html'),
-		}),/*
-		new webpack.HashedModuleIdsPlugin(),
-		new webpack.optimize.CommonsChunkPlugin({ name: 'vendor' }),
-		new webpack.optimize.CommonsChunkPlugin({ name: 'runtime' }),*/
+		}),
 		new es3ifyPlugin(),
 	],
 	resolve: {
@@ -48,13 +51,9 @@ commonConfig = {
 			components: path.join(__dirname, 'src/components'),
 			containers: path.join(__dirname, 'src/containers'),
 			constants: path.join(__dirname, 'src/constants'),
-			plugins: path.join(__dirname, 'src/plugins'),
-			styles: path.join(__dirname, 'src/styles'),
 			utils: path.join(__dirname, 'src/utils'),
-			mock: path.join(__dirname, 'src/mock'),
-			img: path.join(__dirname, 'src/img'),
-		}
-	}
+		},
+	},
 };
 
 module.exports = commonConfig;

@@ -18,7 +18,8 @@
 	* [bootcdn](http://www.bootcdn.cn/) 不是很多,少量可能更新不及时,不是最新
 	* 吐槽一下 "match-media" 两个cdn都没有,但是没有的话 `ant design` 又报错.于是网上找了好久,没找到可靠的,后在 https://www.npmjs.com 里找到,于是通过加入 dependencies, 然后在 index.js 中 import (不知道有没有更好的解决办法)
 * dependencies 查询和资料参考来源 [官网](https://www.npmjs.com)
-* 出于增加编译速度的考虑 将 `antd.min.css` `jquery.min.js` `json2.min.js` 放到 index.html 中用 cdn 引入
+* 使用 copy-webpack-plugin 直接拷贝静态资源
+* 移除了 react-hot-loader 在IE中支持不是很好
 * 对于 ant design 的表格 `表头和列同时固定的时候` 报错 `IE8 不支持 onScroll 事件`, 利用 jquery 做了如下兼容处理
 ```js
 const verIE = e => {
@@ -29,7 +30,7 @@ const verIE = e => {
 		return { ver, mod };
 	}
 };
-
+// 在使用Table的组件中添加如下函数
 componentDidMount() {
 	const res = verIE(); // 获取IE版本信息,返回值 {ver:IE版本,mod:文档模式版本}
 	if (res) {
@@ -55,44 +56,7 @@ componentDidMount() {
 	}
 }
 ```
-* 另外针对 bundle-loader 的 lazy load component 的创建函数做优化,传递Route的路由信息到组件属性 [react-family-ie8](https://github.com/brickspert/react-family-ie8)中无介绍,局部代码如下
-```js
-const newBundle = (lazyComponent, LoadingComponent) =>
-	props => <Bundle
-		load={lazyComponent}
-		fn={
-			WaitingComponent => WaitingComponent ?
-				<WaitingComponent {...props} /> :
-				<LoadingComponent {...props} />
-		}
-	/>;
-/*
-import { Route } from 'react-router-dom';
-import Loading from '../components/Loading';
-import Home from 'bundle-loader?lazy&name=home!../components/Home';
-
-<Route component={newBundle(Home, Loading)} />
-1. 在 Home 组件报错的时候整体页面依旧可以正常加载,只是切换到加载 Loading 组件
-2. package.json 中需添加依赖 bundle-loader
-3. 若不需要其实可以移除此文件
-*/
-```
-那么待加载组件的 `props` 属性就包含 路由信息, 以下是 `props` 具体内容
-```json
-{
-	"history": {
-		"length": 12,
-		"push": function(){},
-		"go": function(){},
-		// ...其他属性方法
-	},
-	"location": {
-		"hash": "",
-		"pathname": "/test", // 当前路由地址
-		"search": ""
-	}
-}
-```
+* 优化 bundle-loader 组件的创造函数 见`src/utils/bundle.js`
 
 开始学 react webpack,还有很多不懂,欢迎指点秘籍,或者纠错改进
 `fork` 不 `fork` 无所谓, 共同学习,共同进步
