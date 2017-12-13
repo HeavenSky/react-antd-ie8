@@ -5,14 +5,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 commonConfig = {
-	entry: {
-		app: [
-			'es5-shim',
-			'es5-shim/es5-sham',
-			'babel-polyfill',
-			path.join(__dirname, 'src/index.js'),
-		],
-	},
+	entry: {},
 	output: {
 		path: path.join(__dirname, './dist'),
 		filename: 'js/[name].[chunkhash:5].js',
@@ -35,13 +28,9 @@ commonConfig = {
 	},
 	plugins: [
 		new CopyWebpackPlugin([{
-			from: path.join(__dirname, 'src/static'),
+			from: 'src/static',
 			to: 'static',
 		}]),
-		new HtmlWebpackPlugin({
-			filename: 'index.html',
-			template: path.join(__dirname, 'src/index.html'),
-		}),
 		new es3ifyPlugin(),
 	],
 	resolve: {
@@ -55,5 +44,27 @@ commonConfig = {
 		},
 	},
 };
+const addPagePlugin = name => {
+	const app = name ? name + '/index' : 'index';
+	commonConfig.entry[app] = [
+		'es5-shim',
+		'es5-shim/es5-sham',
+		'babel-polyfill',
+		path.join(__dirname, 'src/view/' + app + '.js'),
+	];
+	commonConfig.output.publicPath = name ? '/' : './';
+	commonConfig.plugins.push(
+		new HtmlWebpackPlugin({
+			filename: app + '.html',
+			template: path.join(__dirname, 'src/index.html'),
+			chunks: [app],
+			inject: true,
+			xhtml: true,
+			hash: true,
+		})
+	);
+};
+const pageList = ['']; // 多页面打包
+pageList.forEach(v => addPagePlugin(v));
 
 module.exports = commonConfig;

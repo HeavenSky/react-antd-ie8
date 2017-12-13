@@ -25,8 +25,8 @@ const publicConfig = {
 		]),
 		new UglifyJSPlugin({
 			mangle: { screw_ie8: false },
-			mangleProperties: { screw_ie8: false, },
-			compress: { screw_ie8: false, },
+			mangleProperties: { screw_ie8: false },
+			compress: { screw_ie8: false },
 			output: { screw_ie8: false },
 		}),
 		new webpack.DefinePlugin({
