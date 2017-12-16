@@ -14,15 +14,15 @@ commonConfig = {
 	},
 	module: {
 		postLoaders: [{
-			test: /\.js$/,
+			test: /\.js$/i,
 			loaders: ['export-from-ie8/loader'],
 		}],
 		loaders: [{
-			test: /\.js$/,
+			test: /\.js$/i,
 			loaders: ['babel-loader?cacheDirectory=true'],
 			include: path.join(__dirname, 'src'),
 		}, {
-			test: /\.(bmp|gif|ico|jpg|png)$/,
+			test: /\.(bmp|gif|ico|jpg|png)$/i,
 			loader: 'url-loader?limit=3072&name=img/[name].[hash:5].[ext]',
 		}],
 	},
@@ -31,6 +31,10 @@ commonConfig = {
 			from: 'src/static',
 			to: 'static',
 		}]),
+		new webpack.ContextReplacementPlugin(
+			/moment[\/\\]locale$/i,
+			/^\.\/(zh-cn)$/i,
+		),
 		new es3ifyPlugin(),
 	],
 	resolve: {

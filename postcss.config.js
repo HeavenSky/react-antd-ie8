@@ -1,5 +1,11 @@
 module.exports = {
 	plugins: {
-		'postcss-cssnext': {},
+		'postcss-cssnext': {
+			broswers: [
+				'> 1%',
+				'ie >= 8',
+				'last 2 versions',
+			],
+		},
 	},
 };
