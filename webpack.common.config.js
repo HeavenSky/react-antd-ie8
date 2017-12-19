@@ -51,8 +51,10 @@ commonConfig = {
 const addPagePlugin = name => {
 	const app = name ? name + '/index' : 'index';
 	commonConfig.entry[app] = [
+		'console-polyfill',
 		'es5-shim',
 		'es5-shim/es5-sham',
+		'html5shiv',
 		'babel-polyfill',
 		path.join(__dirname, 'src/view/' + app + '.js'),
 	];

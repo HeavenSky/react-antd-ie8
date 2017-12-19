@@ -1,4 +1,3 @@
-import 'match-media';
 import $ from 'jquery';
 import moment from 'moment';
 import numeral from 'numeral';

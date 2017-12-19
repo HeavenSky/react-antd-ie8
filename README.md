@@ -20,8 +20,8 @@
 * cdn 源两个 [cdnjs](https://cdnjs.com) [bootcdn](http://www.bootcdn.cn)
 	* [cdnjs](https://cdnjs.com) 非常全, 更新迅速及时, 但是国内访问非常慢
 	* [bootcdn](http://www.bootcdn.cn) 不是很全, 可能更新不及时, 但是国内访问速度快
-	* 发现`match-media`两个 cdn 都没有, 但是没有的话`ant design`在 IE8 下又报错. 在网上找了好久, 也没找到可靠的, 后来在 https://www.npmjs.com 里找到, 于是加入 dependencies, 然后在 index.js 中 import (不知道有没有更好的解决办法)
-* dependencies 查询和资料参考来源 [官网](https://www.npmjs.com)
+* antd 需要`match-media`, 在[npmjs官网](https://www.npmjs.com)找到的不支持`addListener`和`removeListener`, 索性还是直接从[阿里的库里](https://as.alipayobjects.com/g/component/??media-match/2.0.2/media.match.min.js)拿
+* dependencies 查询和资料参考来源 [npmjs官网](https://www.npmjs.com)
 * 使用 copy-webpack-plugin 直接拷贝静态资源
 * 移除了 react-hot-loader 在 IE 中支持不是很好
 * 优化 bundle-loader 组件的创造函数 见`src/utils/bundle.js`

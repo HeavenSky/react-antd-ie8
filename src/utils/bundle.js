@@ -33,10 +33,11 @@ class Bundle extends Component {
 		return this.renderComponent(mod, loading, props);
 	}
 }
-export const newBundle = ComponentLoading =>
-	ComponentCallback =>
-		props => <Bundle
-			props={props}
-			loading={ComponentLoading}
-			callback={ComponentCallback}
-		/>
+export const newBundle =
+	ComponentLoading =>
+		ComponentCallback =>
+			props => <Bundle
+				props={props}
+				loading={ComponentLoading}
+				callback={ComponentCallback}
+			/>
