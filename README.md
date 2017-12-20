@@ -20,7 +20,11 @@
 * cdn 源两个 [cdnjs](https://cdnjs.com) [bootcdn](http://www.bootcdn.cn)
 	* [cdnjs](https://cdnjs.com) 非常全, 更新迅速及时, 但是国内访问非常慢
 	* [bootcdn](http://www.bootcdn.cn) 不是很全, 可能更新不及时, 但是国内访问速度快
-* antd 需要`match-media`, 在[npmjs官网](https://www.npmjs.com)找到的不支持`addListener`和`removeListener`, 索性还是直接从[阿里的库里](https://as.alipayobjects.com/g/component/??media-match/2.0.2/media.match.min.js)拿
+* antd 需要`window.matchMedia`, 在[npmjs官网](https://www.npmjs.com)找到两个 ployfill 库(两者名字不一样!!!): `match-media` 和 `media-match`
+	* 两者均不能使用 `import matchMedia from '<package_name>';` 只能用 `import '<package_name>';`
+	* `match-media` 只是 `import 'match-media';` 并未兼容 `addListener` 和 `removeListener`, 需要再引入 `import 'match-media/matchMedia.addListener';`
+	* `media-match` 直接引入即可 `import 'media-match';`
+	* 也可以直接从[阿里的库里](https://as.alipayobjects.com/g/component/??media-match/2.0.2/media.match.min.js)拿
 * dependencies 查询和资料参考来源 [npmjs官网](https://www.npmjs.com)
 * 使用 copy-webpack-plugin 直接拷贝静态资源
 * 移除了 react-hot-loader 在 IE 中支持不是很好

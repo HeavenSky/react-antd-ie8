@@ -28,7 +28,7 @@ const devConfig = {
 		historyApiFallback: true,
 		inline: false, // ie9以下不支持会报错
 		colors: true,
-		open: true,
+		open: false,
 		publicPath: '/',
 		host: 'localhost',
 		port: 8888,

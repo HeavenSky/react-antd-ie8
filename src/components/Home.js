@@ -1,5 +1,5 @@
 import React from 'react';
-import { Timeline, Icon } from 'antd';
+import { Timeline, Icon, InputNumber, DatePicker } from 'antd';
 
 export default props => <div>
 	<Timeline>
@@ -12,4 +12,11 @@ export default props => <div>
 		</Timeline.Item>
 		<Timeline.Item>网络异常正在修复 2015-09-01</Timeline.Item>
 	</Timeline>
+	<DatePicker.RangePicker showTime format='yyyy-MM-dd HH:mm:ss' />
+	<br />
+	<DatePicker.RangePicker />
+	<br />
+	<DatePicker />
+	<br />
+	<InputNumber />
 </div>

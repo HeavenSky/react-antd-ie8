@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { DatePicker, Button, Icon, Table } from 'antd';
-import { verIE } from '../utils/fns';
+import { Button, Icon, Table } from 'antd';
+import { shimAntdTable } from '../utils/fns';
+import SVC from '../utils/service';
 
 export default class Hello extends Component {
 	constructor(props) {
@@ -11,36 +12,12 @@ export default class Hello extends Component {
 		};
 	}
 	componentDidMount = () => this.load()
-	componentDidUpdate = () => {
-		const res = verIE(); // 获取IE版本信息,返回值 {ver:IE版本,mod:文档模式版本}
-		if (res) {
-			if (res.ver < 9 || res.mod < 9) {
-				$('.ant-table-scroll .ant-table-body')
-					.on('scroll', e => {
-						const ev = e || window.event;
-						const el = $(e.target || e.srcElement);
-						const left = el.scrollLeft();
-						el.siblings('.ant-table-header').scrollLeft(left);
-					});
-				$('.ant-table-fixed-left .ant-table-body-inner,.ant-table-scroll .ant-table-body,.ant-table-fixed-right .ant-table-body-inner')
-					.on('scroll', e => {
-						const ev = e || window.event;
-						const el = $(e.target || e.srcElement);
-						const top = el.scrollTop();
-						const table = el.parents('.ant-table').eq(0);
-						table.find('.ant-table-fixed-left .ant-table-body-inner').scrollTop(top);
-						table.find('.ant-table-scroll .ant-table-body').scrollTop(top);
-						table.find('.ant-table-fixed-right .ant-table-body-inner').scrollTop(top);
-					});
-			}
-		}
-	}
+	componentDidUpdate = shimAntdTable
 	load = e => {
 		this.setState({ loading: true });
-		$.get('/askme/getinfo.php').done(
-			({ data, info, success, type }) =>
-				success && data && data.length && this.setState({ list: data })
-		).always(e => this.setState({ loading: false }))
+		SVC.askme().done(
+			({ data }) => this.setState({ list: data || [] })
+		).always(e => this.setState({ loading: false }));
 	}
 	cols = data => {
 		const columns = [{
@@ -80,9 +57,6 @@ export default class Hello extends Component {
 		const { list, loading } = this.state;
 		return (
 			<div>
-				<DatePicker />
-				<DatePicker.RangePicker />
-				<DatePicker.RangePicker showTime format='yyyy/MM/dd HH:mm:ss' />
 				<Button type='primary' disabled={loading} onClick={this.load}>重新加载</Button>
 				<Table loading={loading} columns={this.cols(list)} dataSource={list} scroll={{ x: 800, y: 200 }} />
 			</div>
