@@ -28,43 +28,8 @@
 * dependencies 查询和资料参考来源 [npmjs官网](https://www.npmjs.com)
 * 使用 copy-webpack-plugin 直接拷贝静态资源
 * 移除了 react-hot-loader 在 IE 中支持不是很好
-* 优化 bundle-loader 组件的创造函数 见`src/utils/bundle.js`
-* 对于 ant design 的表格 `表头和列固定的时候` 报错 `IE8 不支持 onScroll 事件`, 利用 jquery 做了如下兼容处理
-```js
-const verIE = e => {
-	// 此方法只能检查IE版本 IE11以下 或 IE文档模式11以下
-	if ( /*@cc_on !@*/ false) {
-		const ver =  /*@cc_on @_jscript_version@*/ -0;
-		const mod = document.documentMode;
-		return { ver, mod };
-	}
-};
-// 在使用Table的组件中添加如下函数
-componentDidMount() {
-	const res = verIE(); // 获取IE版本信息,返回值 {ver:IE版本,mod:文档模式版本}
-	if (res) {
-		if (res.ver < 9 || res.mod < 9) {
-			$('.ant-table-scroll .ant-table-body')
-				.on('scroll', e => {
-					const ev = e || window.event;
-					const el = $(e.target || e.srcElement);
-					const left = el.scrollLeft();
-					el.siblings('.ant-table-header').scrollLeft(left);
-				});
-			$('.ant-table-fixed-left .ant-table-body-inner,.ant-table-scroll .ant-table-body,.ant-table-fixed-right .ant-table-body-inner')
-				.on('scroll', e => {
-					const ev = e || window.event;
-					const el = $(e.target || e.srcElement);
-					const top = el.scrollTop();
-					const table = el.parents('.ant-table').eq(0);
-					table.find('.ant-table-fixed-left .ant-table-body-inner').scrollTop(top);
-					table.find('.ant-table-scroll .ant-table-body').scrollTop(top);
-					table.find('.ant-table-fixed-right .ant-table-body-inner').scrollTop(top);
-				});
-		}
-	}
-}
-```
+* 优化 bundle-loader 的组件创造函数 见`src/utils/bundle.js`
+* 对于 ant design 的表格 `表头和列固定的时候` 报错 `IE8 不支持 onScroll 事件`, 兼容处理见`src/utils/fns.js`内的 `shimAntdTable` 函数(优化了事件函数的重复绑定问题)
 
 刚开始学 webpack, 还有很多不懂, 欢迎指点秘籍, 或者纠错改进, 共同学习,共同进步
 

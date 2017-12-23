@@ -28,9 +28,9 @@ export default class Hello extends Component {
 		if (data && data.length) {
 			for (let x in data[0]) {
 				columns.push({
-					title: x,
+					title: 'title:' + x,
 					dataIndex: x,
-					key: x,
+					key: 'key-' + x,
 				});
 			}
 		}
@@ -38,12 +38,16 @@ export default class Hello extends Component {
 			title: '操作',
 			key: 'action',
 			render: (v, record, idx) => <span>
-				<Icon type='info-circle primary' />
-				<Icon type='check-circle primary' />
+				<Icon type='copy primary' />
+				<Icon type='edit primary' />
 				<Icon
-					type='cross-circle danger'
-					onClick={e =>
-						this.setState({ data: data.splice(idx, 1).slice() })
+					type='delete danger'
+					onClick={
+						e => {
+							const list = data.slice();
+							list.splice(idx, 1);
+							this.setState({ list });
+						}
 					} />
 			</span>
 		});

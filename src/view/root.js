@@ -6,11 +6,11 @@ import Hello from 'bundle-loader?lazy&name=hello!components/Hello';
 import Test from 'bundle-loader?lazy&name=test!components/Test';
 
 import Menu from 'components/Menu';
-import Loading from 'components/Loading';
 import { NAV_COL } from 'constants/columns';
 import { bundle } from 'utils/bundle';
 import './root.less';
 
+const Loading = props => <div>Loading</div>;
 const createBundle = bundle(Loading);
 const MainHome = createBundle(Home);
 export default props => <HashRouter>
