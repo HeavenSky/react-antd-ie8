@@ -3,8 +3,8 @@ import { Link, withRouter } from 'react-router-dom';
 import { Menu, Icon } from 'antd';
 
 const NewLink =
-	({ children, to, location: { pathname } }) =>
-		pathname === to ? <a>{children}</a> :
+	({ children, disabled, to, location: { pathname } }) =>
+		disabled || pathname === to ? <span>{children}</span> :
 			<Link to={to}>{children}</Link>;
 const RouterLink = withRouter(NewLink);
 const renderMenuItem =
@@ -13,7 +13,7 @@ const renderMenuItem =
 			key={key || link}
 			{...props}
 		>
-			<RouterLink to={link || key}>
+			<RouterLink to={link || key} disabled={props.disabled}>
 				{icon && <Icon type={icon} />}
 				<span>{title}</span>
 			</RouterLink>
