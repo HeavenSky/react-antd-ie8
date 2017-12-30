@@ -33,8 +33,9 @@ commonConfig = {
 		}]),
 		new webpack.ContextReplacementPlugin(
 			/moment[\/\\]locale$/i,
-			/^\.\/(zh-cn)$/i,
+			/^\.\/zh\-cn$/i,
 		),
+		// new webpack.IgnorePlugin(/^\.\/locale$/i, /moment$/i),
 		new es3ifyPlugin(),
 	],
 	resolve: {
