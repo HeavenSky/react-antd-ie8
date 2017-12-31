@@ -12,16 +12,18 @@ export default class Test extends Component {
 			lang: 'cn',
 			loading: false,
 		};
+		this.load = () => {
+			this.setState({ loading: true });
+			SVC.action(this.state).done(
+				({ data }) => this.setState({ list: data || [] })
+			).always(e => this.setState({ loading: false }));
+		};
+		this.switch = key => e => {
+			this.state[key] = e && e.target ? e.target.value : e;
+			this.load();
+		};
 	}
-	componentDidMount = () => this.load()
-	load = () => {
-		this.setState({ loading: true });
-		SVC.action(this.state).done(
-			({ data }) => this.setState({ list: data || [] })
-		).always(e => this.setState({ loading: false }));
-	}
-	switch = key => e => {
-		this.state[key] = e && e.target ? e.target.value : e;
+	componentDidMount() {
 		this.load();
 	}
 	render() {

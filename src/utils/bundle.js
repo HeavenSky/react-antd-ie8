@@ -16,28 +16,34 @@ export class Bundle extends Component {
 		super(props);
 		// short for 'module' but that's a keyword in js, so 'mod'
 		this.state = { mod: null };
+		this.load = callback => {
+			this.setState({ mod: null });
+			// handle both es imports and cjs
+			callback(mod =>
+				this.setState({ mod: mod.default || mod })
+			);
+		};
+		this.renderMod = (Done, Wait, props) =>
+			Done ? <Done {...props} /> : <Wait {...props} />;
 	}
-	componentDidMount = () => this.load(this.props.callback)
-	componentWillReceiveProps = ({ callback }) =>
-		this.props.callback !== callback && this.load(callback)
-	load = callback => {
-		this.setState({ mod: null });
-		// handle both es imports and cjs
-		callback(mod => this.setState({ mod: mod.default || mod }));
+	componentDidMount() {
+		const { callback } = this.props;
+		this.load(callback);
 	}
-	renderComponent = (ComponentWaiting, ComponentLoading, props = {}) =>
-		ComponentWaiting ? <ComponentWaiting {...props} /> : <ComponentLoading {...props} />
+	componentWillReceiveProps(nextProp) {
+		const { callback } = this.props;
+		const cb = nextProp.callback;
+		cb !== callback && this.load(cb);
+	}
 	render() {
 		const { loading, props } = this.props;
 		const { mod } = this.state;
-		return this.renderComponent(mod, loading, props);
+		return this.renderMod(mod, loading, props);
 	}
 }
-export const bundle =
-	ComponentLoading =>
-		ComponentCallback =>
-			props => <Bundle
-				props={props}
-				loading={ComponentLoading}
-				callback={ComponentCallback}
-			/>
+export const bundle = Loading =>
+	Callback => props => <Bundle
+		props={props}
+		loading={Loading}
+		callback={Callback}
+	/>

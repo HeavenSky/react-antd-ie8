@@ -1,10 +1,10 @@
 const path = require('path');
 const webpack = require('webpack');
-const es3ifyPlugin = require('es3ify-webpack-plugin');
+const Es3ifyPlugin = require('es3ify-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
-commonConfig = {
+const commonConfig = {
 	entry: {},
 	output: {
 		path: path.join(__dirname, './dist'),
@@ -14,13 +14,14 @@ commonConfig = {
 	},
 	module: {
 		postLoaders: [{
-			test: /\.js$/i,
+			test: /\.jsx?$/i,
 			loaders: ['export-from-ie8/loader'],
 		}],
 		loaders: [{
-			test: /\.js$/i,
+			test: /\.jsx?$/i,
 			loaders: ['babel-loader?cacheDirectory=true'],
 			include: path.join(__dirname, 'src'),
+			exclude: path.join(__dirname, 'src/static')
 		}, {
 			test: /\.(bmp|gif|ico|jpg|png)$/i,
 			loader: 'url-loader?limit=3072&name=img/[name].[hash:5].[ext]',
@@ -32,11 +33,11 @@ commonConfig = {
 			to: 'static',
 		}]),
 		new webpack.ContextReplacementPlugin(
-			/moment[\/\\]locale$/i,
-			/^\.\/zh\-cn$/i,
+			/moment[\\/]locale$/i,
+			/^\.\/zh-cn$/i,
 		),
 		// new webpack.IgnorePlugin(/^\.\/locale$/i, /moment$/i),
-		new es3ifyPlugin(),
+		new Es3ifyPlugin(),
 	],
 	resolve: {
 		alias: {

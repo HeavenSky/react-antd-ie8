@@ -4,8 +4,9 @@ import { Menu, Icon } from 'antd';
 
 const NewLink =
 	({ children, disabled, to, location: { pathname } }) =>
-		disabled || pathname === to ? <span>{children}</span> :
-			<Link to={to}>{children}</Link>;
+		disabled || pathname === to
+			? <span>{children}</span>
+			: <Link to={to}>{children}</Link>;
 const RouterLink = withRouter(NewLink);
 const renderMenuItem =
 	({ key, title, icon, link, ...props }) => (
@@ -35,8 +36,9 @@ const renderGroupMenu =
 		</Menu.ItemGroup>
 	);
 const renderGroupItem = item =>
-	item.group && item.group.length ?
-		renderGroupMenu(item) : renderMenuItem(item);
+	item.group && item.group.length
+		? renderGroupMenu(item)
+		: renderMenuItem(item);
 const renderSubMenu =
 	({ key, title, icon, link, sub, ...props }) => (
 		<Menu.SubMenu
@@ -53,43 +55,46 @@ const renderSubMenu =
 		</Menu.SubMenu>
 	);
 const renderSubItem = item =>
-	item.sub && item.sub.length ?
-		renderSubMenu(item) : renderGroupItem(item);
+	item.sub && item.sub.length
+		? renderSubMenu(item)
+		: renderGroupItem(item);
 class NewMenu extends Component {
 	constructor(props) {
 		super(props);
+		this.getArr = arr => {
+			const res = [];
+			if (arr) {
+				for (let i = 1; i <= arr.length; i++) {
+					res.push(arr.slice(0, i).join(''));
+				}
+			}
+			return res;
+		};
+		this.getKeys = path => {
+			const res = String(path).match(/\/[^/]+/g);
+			return {
+				openKeys: this.getArr(res && res.slice(0, -1)),
+				selectedKeys: this.getArr(res),
+			};
+		};
+		this.keySwitch = newKeys => {
+			const { openKeys } = this.state;
+			const newKey = newKeys.find(
+				v => openKeys.indexOf(v) < 0
+			);
+			const menu = this.props.menus.find(
+				v => v.key === newKey
+			);
+			this.setState({
+				openKeys: !menu ? newKeys
+					: newKey ? [newKey] : []
+			});
+		};
 		const { location: { pathname } } = props;
 		this.state = this.getKeys(pathname);
 	}
-	componentWillReceiveProps =
-		({ location: { pathname } }) =>
-			this.setState(this.getKeys(pathname))
-	getArr = arr => {
-		const res = [];
-		for (let i = 1; arr && i <= arr.length; i++) {
-			res.push(arr.slice(0, i).join(''));
-		}
-		return res;
-	}
-	getKeys = path => {
-		const res = String(path).match(/\/[^\/]+/g);
-		return {
-			openKeys: this.getArr(res && res.slice(0, -1)),
-			selectedKeys: this.getArr(res),
-		};
-	}
-	keySwitch = newKeys => {
-		const { openKeys } = this.state;
-		const newKey = newKeys.find(
-			v => openKeys.indexOf(v) < 0
-		);
-		const menu = this.props.menus.find(
-			v => v.key === newKey
-		);
-		this.setState({
-			openKeys: !menu ? newKeys :
-				newKey ? [newKey] : []
-		});
+	componentWillReceiveProps({ location: { pathname } }) {
+		this.setState(this.getKeys(pathname));
 	}
 	render() {
 		const { menus, ...props } = this.props;
