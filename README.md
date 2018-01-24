@@ -21,9 +21,9 @@
 	* [cdnjs](https://cdnjs.com) 非常全, 更新迅速及时, 但是国内访问非常慢
 	* [bootcdn](http://www.bootcdn.cn) 不是很全, 可能更新不及时, 但是国内访问速度快
 * antd 需要`window.matchMedia`, 在[npmjs官网](https://www.npmjs.com)找到两个 ployfill 库(两者名字不一样!!!): `match-media` 和 `media-match`
-	* 两者均不能使用 `import matchMedia from '<package_name>';` 只能用 `import '<package_name>';`
-	* `match-media` 只是 `import 'match-media';` 并未兼容 `addListener` 和 `removeListener`, 需要再引入 `import 'match-media/matchMedia.addListener';`
-	* `media-match` 直接引入即可 `import 'media-match';`
+	* 两者均不能使用 `import matchMedia from "<package_name>";` 只能用 `import "<package_name>";`
+	* `match-media` 只是 `import "match-media";` 并未兼容 `addListener` 和 `removeListener`, 需要再引入 `import "match-media/matchMedia.addListener";`
+	* `media-match` 直接引入即可 `import "media-match";`
 	* 也可以直接从[阿里的库里](https://as.alipayobjects.com/g/component/??media-match/2.0.2/media.match.min.js)拿
 * dependencies 查询和资料参考来源 [npmjs官网](https://www.npmjs.com)
 * 使用 copy-webpack-plugin 直接拷贝静态资源
@@ -48,16 +48,15 @@
 ### 关于代码缩进
 * 我是tab,不想争,1个字符比2个4个空格少
 ### 关于引号
-* js统一单引号,字符串内的单引号统一`\'`或`\x27`,双引号`\x22`,那样就找不到双引号了
+* js统一双引号,字符串内的单引号统一`\"`,单引号`\x27`,双引号`\x22`,那样就找不到单引号了
 * css统一双引号,content内容必须转义,防止偶尔的乱码
 ### 是否加逗号
-* 个人原则,行结尾的逗号,能加就必加,方便整行移动时就可以不管是否需要加逗号了
+* 原则上,行结尾的逗号,加不加逗号都不会有语法错误的情况,加逗号,方便整行移动时无视是否需要加逗号
+* 习惯上,非行结尾的逗号,加不加逗号都不会有语法错误的情况,不加逗号
 * 数组 如果内部换行,换行前必加逗号
 * 对象 如果内部换行,换行前必加逗号
 ### 是否加分号
-* export,class 语句块结束都不要加分号
-* class内的属性和函数 语句块结束都不要加分号
-* 其他情况尽可能完整追加分号
+* 所有情况尽可能完整追加分号
 ### 关于定义变量
 * 如果赋值,一个变量一条const或者let,不用var
 * 如果可以,尽可能用对象或数组的解构形式进行赋值
@@ -69,20 +68,15 @@
 * 自定义的一些函数
 * 引入图片文件
 * 引入样式文件
-### 下面是我根据vscode默认js格式化而替换掉部分standardjs配置
+### 兼容 MAC shell 的 `sed` 命令
 ```shell
 # 拷贝至bash直接回车即可 当前目录是node_modules所在目录
-sed -i '/semi/s/error/off/' node_modules/eslint-config-standard/eslintrc.json
-sed -i '/indent/s/error/off/' node_modules/eslint-config-standard/eslintrc.json
-sed -i '/no-tabs/s/error/off/' node_modules/eslint-config-standard/eslintrc.json
-sed -i '/eol-last/s/error/off/' node_modules/eslint-config-standard/eslintrc.json
-sed -i '/comma-dangle/s/error/off/' node_modules/eslint-config-standard/eslintrc.json
-sed -i '/spaced-comment/s/error/off/' node_modules/eslint-config-standard/eslintrc.json
-sed -i '/no-callback-literal/s/error/off/' node_modules/eslint-config-standard/eslintrc.json
-sed -i '/object-property-newline/s/error/off/' node_modules/eslint-config-standard/eslintrc.json
-sed -i '/no-webpack-loader-syntax/s/error/off/' node_modules/eslint-config-standard/eslintrc.json
-sed -i '/space-before-function-paren/s/error/off/' node_modules/eslint-config-standard/eslintrc.json
-sed -i '/jsx-indent/s/error/off/' node_modules/eslint-config-standard-jsx/eslintrc.json
+if [ `uname` = 'Darwin' ];
+then
+	alias sed='sed -i '\'\'
+else
+	alias sed='sed -i'
+fi
 ```
 
 ## 开发坏境启动

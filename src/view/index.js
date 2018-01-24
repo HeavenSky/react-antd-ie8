@@ -1,6 +1,5 @@
-import 'utils/global';
-import React from 'react';
-import { render } from 'react-dom';
-import RootComponent from './root';
+import React from "react";
+import { render } from "react-dom";
+import RootComponent from "./root";
 
-render(<RootComponent />, document.getElementById('root'));
+render(<RootComponent />, document.getElementById("root"));

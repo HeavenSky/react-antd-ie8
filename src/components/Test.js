@@ -1,60 +1,85 @@
-import React, { Component } from 'react';
-import { Select, Table } from 'antd';
-import { THEBUDDY_COL } from '../constants/columns';
-import SVC from '../utils/service';
+import React, { Component } from "react";
+import { Collapse, Icon, Spin } from "antd";
+import Select from "./Select";
+import { $get } from "../utils/fns";
 
-export default class Test extends Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			list: [],
-			type: 'news',
-			lang: 'cn',
-			loading: false,
-		};
-		this.load = () => {
-			this.setState({ loading: true });
-			SVC.action(this.state).done(
-				({ data }) => this.setState({ list: data || [] })
-			).always(e => this.setState({ loading: false }));
-		};
-		this.switch = key => e => {
-			this.state[key] = e && e.target ? e.target.value : e;
-			this.load();
-		};
-	}
-	componentDidMount() {
-		this.load();
-	}
+const List = ({ items, ...res }) =>
+	<Collapse accordion {...res}>
+		{items.map(v => {
+			const { id, name, description } = v;
+			const url = v["html_url"];
+			const count = v["stargazers_count"];
+			return <Collapse.Panel key={id}
+				header={
+					<span>
+						<a href={url} target="_blank">{name}</a>
+						<span className="offset">
+							<Icon type="star" />
+							{`stars: ${count}`}
+						</span>
+					</span>
+				}
+			>
+				{description}
+			</Collapse.Panel>;
+		})}
+	</Collapse>;
+class Test extends Component {
+	state = {
+		items: [],
+		lang: "JavaScript",
+		order: "desc",
+		loading: false,
+	};
+	langs = ["ActionScript", "C", "Clojure", "CoffeeScript", "CSS", "Go", "Haskell", "HTML", "Java", "JavaScript", "Lua", "Matlab", "Objective-C", "Perl", "PHP", "Python", "R", "Ruby", "Scala", "Shell", "Swift", "TeX", "TypeScript", "Vim script"].map(v => ({ id: v, label: v }));
+	orders = [{ id: "asc", label: "顺序" }, { id: "desc", label: "倒序" }];
+	load = (key, val) => {
+		const res = { loading: true };
+		if (key) {
+			res[key] = val;
+		}
+		this.setState(res);
+		const { lang, order } = Object.assign(this.state, res);
+		$get(
+			"https://api.github.com/search/repositories",
+			{
+				q: `topic:${lang} language:${lang}`,
+				sort: "stars", order,
+			}
+		).done(
+			({ items }) => items && this.setState({ items })
+		).always(e => this.setState({ loading: false }));
+	};
+	switch = key => e => {
+		const val = e && e.target
+			? e.target.value : e;
+		this.load(key, val);
+	};
+	componentDidMount = this.load;
 	render() {
-		const { list, type, lang, loading } = this.state;
+		const { items, order, lang, loading } = this.state;
 		return (
 			<div>
-				类型：
-				<Select
-					disabled={loading}
-					value={type}
-					onChange={this.switch('type')}
-				>
-					<Select.Option value='news'>新闻</Select.Option>
-					<Select.Option value='case'>案例</Select.Option>
-					<Select.Option value='info'>资讯</Select.Option>
-				</Select>
-				语言：
-				<Select
+				<span className="offset">语言:</span>
+				<Select isSearch
 					disabled={loading}
 					value={lang}
-					onChange={this.switch('lang')}
-				>
-					<Select.Option value='cn'>中文</Select.Option>
-					<Select.Option value='en'>英文</Select.Option>
-				</Select>
-				<Table
-					loading={loading}
-					columns={THEBUDDY_COL}
-					dataSource={list}
+					onChange={this.switch("lang")}
+					opts={this.langs}
+					className="wd120"
 				/>
+				<span className="offset">排序:</span>
+				<Select
+					disabled={loading}
+					value={order}
+					onChange={this.switch("order")}
+					opts={this.orders}
+				/>
+				<Spin spinning={loading}>
+					<List items={items} />
+				</Spin>
 			</div>
 		);
-	}
-}
+	};
+};
+export default Test;

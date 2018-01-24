@@ -1,73 +1,82 @@
-import React, { Component } from 'react';
-import { Button, Icon, Table } from 'antd';
-import { shimAntdTable } from '../utils/fns';
-import SVC from '../utils/service';
+import React, { Component } from "react";
+import { Button, Icon, Table, Cascader } from "antd";
+import { shimAntdTable } from "../utils/antd";
+import { $get } from "../utils/fns";
 
-export default class Hello extends Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			list: [],
-			loading: false,
-		};
-		this.load = () => {
-			this.setState({ loading: true });
-			SVC.askme().done(
-				({ data }) => this.setState({ list: data || [] })
-			).always(() => this.setState({ loading: false }));
-		};
-		this.cols = data => {
-			const columns = [{
-				title: '序号',
-				key: 'index',
-				render: (v, record, idx) => idx + 1
-			}];
-			if (data && data.length) {
-				for (let x in data[0]) {
-					columns.push({
-						title: 'title:' + x,
-						dataIndex: x,
-						key: 'key-' + x,
-					});
-				}
+class Hello extends Component {
+	state = {
+		list: [],
+		loading: false,
+		options: [],
+	};
+	cols = data => {
+		const columns = [{
+			key: "idx",
+			title: "序号",
+			fixed: "left",
+			render: (v, r) => data.indexOf(r) + 1,
+		}, {
+			key: "act",
+			title: "操作",
+			fixed: "right",
+			render: (v, r) => <span>
+				<Icon type="copy primary" />
+				<Icon type="edit primary" />
+				<Icon
+					type="delete danger"
+					onClick={
+						e => {
+							const i = data.indexOf(r);
+							const list = data.slice();
+							list.splice(i, 1);
+							this.setState({ list });
+						}
+					} />
+			</span>,
+		}];
+		if (data && data[0]) {
+			for (let x in data[0]) {
+				columns.splice(-1, 0, {
+					title: x,
+					dataIndex: x,
+					key: x,
+				});
 			}
-			columns.push({
-				title: '操作',
-				key: 'action',
-				render: (v, record, idx) => <span>
-					<Icon type='copy primary' />
-					<Icon type='edit primary' />
-					<Icon
-						type='delete danger'
-						onClick={
-							e => {
-								const list = data.slice();
-								list.splice(idx, 1);
-								this.setState({ list });
-							}
-						} />
-				</span>
-			});
-			if (columns.length) {
-				columns[0].fixed = 'left';
-				columns[columns.length - 1].fixed = 'right';
-			}
-			return columns;
-		};
-	}
-	componentDidMount() {
-		this.load();
-	}
-	componentDidUpdate() {
-		shimAntdTable();
-	}
-	render() {
-		const { list, loading } = this.state;
-		return (
-			<div>
-				<Button type='primary' disabled={loading} onClick={this.load}>重新加载</Button>
-				<Table loading={loading} columns={this.cols(list)} dataSource={list} scroll={{ x: 800, y: 200 }} />
-			</div>
+		}
+		return columns;
+	};
+	load = () => {
+		this.setState({ loading: true });
+		$get("static/patent.json").done(
+			list => this.setState({ list })
+		).always(
+			() => this.setState({ loading: false })
 		);
-	}
-}
+	};
+	componentDidMount() {
+		$get("static/division.json").done(
+			options => this.setState({ options })
+		);
+		this.load();
+	};
+	componentDidUpdate = shimAntdTable;
+	render() {
+		const { list, loading, options } = this.state;
+		return <div>
+			<Cascader className="wd200" options={options} showSearch />
+			<Button
+				className="offset"
+				type="primary"
+				disabled={loading}
+				onClick={this.load}
+			>重新加载</Button>
+			<Table
+				loading={loading}
+				columns={this.cols(list)}
+				dataSource={list}
+				scroll={{ x: 800, y: 200 }}
+			/>
+		</div>;
+	};
+};
+export default Hello;

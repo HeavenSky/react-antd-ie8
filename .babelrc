@@ -6,11 +6,6 @@
 	],
 	"plugins": [
 		"transform-runtime",
-		[
-			"import",
-			{
-				"libraryName": "antd"
-			}
-		]
+		["import", [{ "libraryName": "antd" }, { "libraryName": "antd-mobile" }]]
 	]
 }
