@@ -70,7 +70,6 @@
 * 引入样式文件
 ### 兼容 MAC shell 的 `sed` 命令
 ```shell
-# 拷贝至bash直接回车即可 当前目录是node_modules所在目录
 if [ `uname` = 'Darwin' ];
 then
 	alias sed='sed -i '\'\'
