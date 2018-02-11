@@ -93,7 +93,6 @@ const commonConfig = {
 			utils: path.join(__dirname, "src/utils"),*/
 		},
 		extensions: ["", ".js", ".jsx", ".json"],
-		modules: [path.join(__dirname, "node_modules")],
 	},
 };
 const addPagePlugin = name => {
