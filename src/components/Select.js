@@ -9,13 +9,12 @@ const NewSelect = props => {
 	};
 	if (isSearch) {
 		extra.filterOption = (value, option) =>
-			option.props.children.toLowerCase()
+			String(option.props.children).toLowerCase()
 				.indexOf(String(value).toLowerCase()) > -1;
 		extra.showSearch = true;
 		extra.allowClear = true;
 	}
-	Object.assign(extra, res);
-	return <Select {...extra}>
+	return <Select {...extra} {...res}>
 		{opts.map(
 			(v, idx) => Boolean(v) &&
 				<Select.Option

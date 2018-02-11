@@ -1,75 +1,102 @@
 import React, { Component } from "react";
-import { Link, withRouter } from "react-router-dom";
+import { NavLink, withRouter } from "react-router-dom";
 import { Menu, Icon } from "antd";
 
-const ICON_STYLE = { marginRight: "10px" };
-const NewLink =
-	({ children, disabled, to, location: { pathname } }) =>
-		disabled || pathname === to
-			? <span>{children}</span>
-			: <Link to={to}>{children}</Link>;
+const MARGIN_RIGHT = { marginRight: "10px" };
+const IconLabel = ({ icon, label, style }) => (
+	<span style={style}>
+		{Boolean(icon) && <Icon
+			style={MARGIN_RIGHT}
+			type={icon}
+		/>}
+		<span>{label}</span>
+	</span>
+);
+const CURSOR_NOTALOW = { cursor: "not-allowed" };
+const CURSOR_POINTER = { cursor: "pointer" };
+const CURSOR_DEFAULT = { cursor: "default" };
+const getPathName = (props, notRoute) => {
+	if (notRoute) {
+		return location.pathname;
+	} else {
+		const { pathname } = props.location || {};
+		return pathname;
+	}
+};
+const NewLink = props => {
+	const { disabled, to, href, children } = props;
+	let style = disabled ? CURSOR_NOTALOW : CURSOR_POINTER;
+	const res = { disabled };
+	if (href) {
+		res.href = href;
+		if (href === getPathName(props, true)) {
+			style = CURSOR_DEFAULT;
+		}
+	} else {
+		res.to = to;
+		if (to === getPathName(props)) {
+			style = CURSOR_DEFAULT;
+		}
+	}
+	res.style = style;
+	if (style !== CURSOR_POINTER) {
+		res.onClick = e => e.preventDefault();
+	}
+	return href ? <a {...res}>{children}</a>
+		: <NavLink {...res}>{children}</NavLink>;
+};
 const RouterLink = withRouter(NewLink);
-const renderMenuItem =
-	({ key, title, icon, link, ...props }) => (
-		<Menu.Item
-			key={key || link}
-			{...props}
-		>
-			<RouterLink to={link || key} disabled={props.disabled}>
-				{icon && <Icon type={icon} />}
-				<span>{title}</span>
-			</RouterLink>
-		</Menu.Item>
-	);
+const renderMenuItem = item => {
+	const { key, to, icon, label, ...res } = item;
+	return <Menu.Item key={key} disabled={res.disabled}>
+		<RouterLink to={to || key} {...res}>
+			{Boolean(icon) && <Icon type={icon} />}
+			<span>{label}</span>
+		</RouterLink>
+	</Menu.Item>;
+};
 const renderGroupMenu =
-	({ key, title, icon, link, group, ...props }) => (
+	({ key, icon, label, group, ...res }) => (
 		<Menu.ItemGroup
-			key={key || link}
-			title={
-				<span>
-					{icon && <Icon
-						type={icon}
-						style={ICON_STYLE}
-					/>}
-					<span>{title}</span>
-				</span>
-			}
-			{...props}
+			key={key}
+			title={<IconLabel
+				icon={icon}
+				label={label}
+				style={CURSOR_DEFAULT}
+			/>}
+			{...res}
 		>
 			{group.map(renderMenuItem)}
 		</Menu.ItemGroup>
 	);
-const renderGroupItem = item =>
-	item.group && item.group.length
-		? renderGroupMenu(item)
-		: renderMenuItem(item);
 const renderSubMenu =
-	({ key, title, icon, link, sub, ...props }) => (
+	({ key, icon, label, sub, ...res }) => (
 		<Menu.SubMenu
-			key={key || link}
-			title={
-				<span>
-					{icon && <Icon
-						type={icon}
-						style={ICON_STYLE}
-					/>}
-					<span>{title}</span>
-				</span>
-			}
-			{...props}
+			key={key}
+			title={<IconLabel
+				icon={icon}
+				label={label}
+				style={CURSOR_POINTER}
+			/>}
+			{...res}
 		>
 			{sub.map(renderSubItem)}
 		</Menu.SubMenu>
 	);
+const renderGroupItem = item =>
+	item && item.group && item.group.length
+		? renderGroupMenu(item)
+		: renderMenuItem(item);
 const renderSubItem = item =>
-	item.sub && item.sub.length
+	item && item.sub && item.sub.length
 		? renderSubMenu(item)
 		: renderGroupItem(item);
-class MyMenu extends Component {
+class NewMenu extends Component {
 	constructor(props) {
 		super(props);
-		const { location: { pathname } } = props;
-		this.state = this.getKeys(pathname);
+		this.state = this.getKeys(
+			getPathName(props, props.notRoute)
+		);
 	};
 	getArr = arr => {
 		const res = [];
@@ -101,21 +128,22 @@ class MyMenu extends Component {
 		});
 	};
 	componentWillReceiveProps(newProps) {
-		const { location: { pathname } } = newProps;
-		this.setState(this.getKeys(pathname));
+		this.setState(this.getKeys(
+			getPathName(newProps, newProps.notRoute)
+		));
 	};
 	render() {
-		const { menus, ...props } = this.props;
 		const { openKeys, selectedKeys } = this.state;
+		const { menus, ...res } = this.props;
 		return <Menu
-			{...props}
-			openKeys={openKeys}
-			selectedKeys={selectedKeys}
 			onOpenChange={this.keySwitch}
+			selectedKeys={selectedKeys}
+			openKeys={openKeys}
+			{...res}
 		>
-			{menus && menus.map(renderSubItem)}
+			{Boolean(menus) && menus.map(renderSubItem)}
 		</Menu>;
 	};
 };
-const NewMenu = withRouter(MyMenu);
-export default NewMenu;
+const RouterMenu = withRouter(NewMenu);
+export default RouterMenu;

@@ -1,17 +1,27 @@
-export const $get = (url, data, type = "GET") =>
-	$.ajax({
-		url, data, type,
-		dataType: "JSON",
-		contentType: "application/x-www-form-urlencoded",
-	});
-export const $post = (url, data, type = "POST") =>
-	$.ajax({
-		url, type,
-		dataType: "JSON",
-		data: JSON.stringify(data),
-		contentType: "application/json; charset=utf-8",
-	});
-export const getType = v => ({}).toString.apply(v).slice(8, -1);
+export const $get =
+	// data 为请求参数
+	(url, data, type = "GET", dataType = "JSON") =>
+		$.ajax({
+			url, data, type, dataType,
+			contentType: "application/x-www-form-urlencoded",
+		});
+export const $post =
+	// data 为json对象
+	(url, data, type = "POST", dataType = "JSON") =>
+		$.ajax({
+			url, type, dataType,
+			data: JSON.stringify(data),
+			contentType: "application/json; charset=utf-8",
+		});
+export const $form =
+	// data 为FormData对象
+	(url, data, type = "POST", dataType = "JSON") =>
+		$.ajax({
+			url, data, type, dataType,
+			processData: false,
+			contentType: false,
+		});
+export const getType = v => ({}).toString.call(v).slice(8, -1);
 export const isMap = v => getType(v) === "Map";
 export const isSet = v => getType(v) === "Set";
 export const isDate = v => getType(v) === "Date";
@@ -24,32 +34,103 @@ export const isBoolean = v => typeof v === "boolean";
 export const isNumber = v => typeof v === "number";
 export const isString = v => typeof v === "string";
 export const isSymbol = v => typeof v === "symbol";
-export const execVal = str => {
+export const tryJSON = str => {
 	let res;
 	try {
+		res = JSON.parse(str);
+	} catch (e) {
+		// eslint-disable-next-line no-console
+		console.error(e);
+	}
+	return res;
+};
+export const tryEVAL = str => {
+	let res;
+	try {
+		// eslint-disable-next-line no-eval
 		res = eval("(" + str + ")");
-	} catch (e) { }
+	} catch (e) {
+		// eslint-disable-next-line no-console
+		console.error(e);
+	}
 	return res;
 };
 export const verIE = () => {
 	// 返回值{ver:IE版本,mod:文档模式版本}, 只能获取11以下的版本信息
-	const isIE = execVal("/*@cc_on !@*/false");
+	const isIE = tryEVAL("/*@cc_on !@*/false");
 	if (isIE) {
-		const ver = execVal("/*@cc_on @_jscript_version@*/-0");
+		const ver = tryEVAL("/*@cc_on @_jscript_version@*/-0");
 		const mod = document.documentMode;
 		return { ver, mod };
 	}
 	return {};
 };
-export const paramUrl = (v, b) => {
-	// b==false,返回值{param:URL中的参数,hash:URL中的哈希,main:URL中的主体}
+export const verClient = () => {
+	const ua = window.navigator.userAgent;
+	let match;
+	match = ua.match(/mobile/i);
+	if (match) {
+		return {
+			type: "mobile",
+		};
+	}
+	match = ua.match(/rv:([.\d]+)[)\s]+like gecko/i) ||
+		ua.match(/msie[/\s]*([.\d]+)/i);
+	if (match) {
+		return {
+			type: "ie",
+			version: match[1],
+		};
+	}
+	match = ua.match(/ucbrowser[/\s]*([.\d]+)/i) ||
+		ua.match(/ucweb[/\s]*([.\d]+)/i);
+	if (match) {
+		return {
+			type: "uc",
+			version: match[1],
+		};
+	}
+	match = ua.match(/opera.*version[/\s]*([.\d]+)/i) ||
+		ua.match(/opera[/\s]*([.\d]+)/i) ||
+		ua.match(/opr[/\s]*([.\d]+)/i);
+	if (match) {
+		return {
+			type: "opera",
+			version: match[1],
+		};
+	}
+	match = ua.match(/firefox[/\s]*([.\d]+)/i);
+	if (match) {
+		return {
+			type: "firefox",
+			version: match[1],
+		};
+	}
+	match = ua.match(/version[/\s]*([.\d]+)\s.*safari[/\s]*/i);
+	if (match) {
+		return {
+			type: "safari",
+			version: match[1],
+		};
+	}
+	match = ua.match(/chrome[/\s]*([.\d]+)/i);
+	if (match) {
+		return {
+			type: "chrome",
+			version: match[1],
+		};
+	}
+	return {};
+};
+export const urlArgs = (v, b) => {
+	// b==false,返回值{args:URL中的参数,hash:URL中的哈希,main:URL中的主体}
 	// b==true,逆向操作
 	if (b) {
 		const { main = "", args = {}, hash = "" } = v || {};
 		let str = "";
 		for (let x in args) {
-			let key = decodeURIComponent(x || "");
-			let value = decodeURIComponent(args[key] || "");
+			const key = encodeURIComponent(x || "");
+			const value = encodeURIComponent(args[key] || "");
 			if (key || value) {
 				str += "&" + key + "=" + value;
 			}
@@ -98,17 +179,30 @@ export const URL_SELECT = {
 		{ id: HTTPS, label: HTTPS },
 	],
 };
-export const formatUrl = url => {
-	let link = String(url || "");
-	let http = "";
-	if (link.slice(0, 7) === HTTP) {
-		link = link.slice(7);
-		http = HTTP;
-	} else if (link.slice(0, 8) === HTTPS) {
-		link = link.slice(8);
-		http = HTTPS;
+export const formatUrl = (url, always) => {
+	if (always) {
+		let bef = url;
+		let aft = "";
+		const pre = [];
+		do {
+			const res = formatUrl(bef);
+			aft = res.link;
+			[bef, aft] = [aft, bef];
+			res.http && pre.push(res.http);
+		} while (bef !== aft);
+		const http = pre.slice(Number(always) || 0)[0] || "";
+		return { http, link: bef };
 	}
-	return { link, http };
+	let http = "";
+	let link = String(url || "");
+	if (link.slice(0, 7) === HTTP) {
+		http = HTTP;
+		link = link.slice(7);
+	} else if (link.slice(0, 8) === HTTPS) {
+		http = HTTPS;
+		link = link.slice(8);
+	}
+	return { http, link };
 };
 export const getArea = division => {
 	// http://www.stats.gov.cn/tjsj/tjbz/xzqhdm

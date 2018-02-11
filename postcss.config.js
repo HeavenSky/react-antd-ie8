@@ -1,5 +1,5 @@
-module.exports = {
-	plugins: {
-		"postcss-cssnext": {},
-	},
+const plugins = {
+	"cssnano": {},
+	"postcss-cssnext": {},
 };
+module.exports = { plugins };

@@ -1,10 +1,9 @@
 const webpack = require("webpack");
 const merge = require("webpack-merge");
-const UglifyJSPlugin = require("uglifyjs-webpack-plugin");
+const UglifyJSPlugin = webpack.optimize.UglifyJsPlugin;
 const CleanWebpackPlugin = require("clean-webpack-plugin");
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 
-// less 生产环境的编译配置比较独特, 具体见 https://github.com/webpack-contrib/extract-text-webpack-plugin/blob/webpack-1/README.md
 const lessLoader = new ExtractTextPlugin(
 	"css/[name].[contenthash:5].css",
 	{ allChunks: true }
@@ -16,7 +15,7 @@ const publicConfig = {
 		loaders: [
 			{
 				test: /_+\.css$/i,
-				loader: ExtractTextPlugin.extract("style-loader", "css-loader?modules&localIdentName=[hash:base64:8]"),
+				loader: ExtractTextPlugin.extract("style-loader", "css-loader?modules&localIdentName=[hash:base64:8]", "postcss-loader"),
 			},
 			{
 				test: /[^_]+\.css$/i,
@@ -25,6 +24,8 @@ const publicConfig = {
 			{
 				test: /\.less$/i,
 				loader: lessLoader.extract(["css", "postcss", "less"]),
+				// 这里不需要 style-loader, 加了反而报错
+				// less在生产环境的编译配置很特殊 https://github.com/webpack-contrib/extract-text-webpack-plugin/blob/webpack-1/README.md
 			},
 		],
 	},

@@ -1,4 +1,4 @@
-# react-ant-ie8
+# react-antd-ie8
 这是一个以 React, React Router DOM, Ant Design 等现代流行框架写的兼容 IE8 的 demo 例子.
 
 ## 技术参考 和 代码介绍
@@ -29,7 +29,7 @@
 * 使用 copy-webpack-plugin 直接拷贝静态资源
 * 移除了 react-hot-loader 在 IE 中支持不是很好
 * 优化 bundle-loader 的组件创造函数 见`src/utils/bundle.js`
-* 对于 ant design 的表格 `表头和列固定的时候` 报错 `IE8 不支持 onScroll 事件`, 兼容处理见`src/utils/fns.js`内的 `shimAntdTable` 函数(优化了事件函数的重复绑定问题)
+* 对于 ant design 的表格 `表头和列固定的时候` 报错 `IE8 不支持 onScroll 事件`, 兼容处理见`src/utils/antd.js`内的 `shimAntdTable` 函数(优化了事件函数的重复绑定问题)
 
 刚开始学 webpack, 还有很多不懂, 欢迎指点秘籍, 或者纠错改进, 共同学习,共同进步
 

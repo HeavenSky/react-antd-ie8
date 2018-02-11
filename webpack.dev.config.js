@@ -33,9 +33,9 @@ const devConfig = {
 	devServer: {
 		contentBase: path.join(__dirname, "dist"),
 		historyApiFallback: true,
-		inline: false, // ie9以下不支持inline
-		colors: true,
+		inline: false, // ie11以下不支持inline
 		open: false,
+		hot: true,
 		publicPath: "/",
 		host: "0.0.0.0",
 		port: 8888,
@@ -46,8 +46,8 @@ const devConfig = {
 				changeOrigin: true,
 			},
 			"/proxy/xyz": {
-				target: "http://xyz.com",
-				secure: false,
+				target: "https://xyz.com",
+				secure: true,
 				changeOrigin: true,
 				pathRewrite: { "^/proxy/xyz": "/abc" },
 			},
