@@ -1,5 +1,9 @@
+const isProd = process.env.NODE_ENV === "production";
 const plugins = {
-	"cssnano": {},
-	"postcss-cssnext": {},
+	autoprefixer: {},
+	// "postcss-cssnext": {},
 };
+if (isProd) {
+	plugins.cssnano = {};
+}
 module.exports = { plugins };
