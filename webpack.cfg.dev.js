@@ -1,4 +1,6 @@
 const path = require("path");
+const dir = path.join.bind(path, __dirname);
+
 const webpack = require("webpack");
 const HappyPack = require("happypack");
 const FriendlyErrorsPlugin = require("friendly-errors-webpack-plugin");
@@ -54,7 +56,7 @@ const devConfig = {
 		new webpack.HotModuleReplacementPlugin(),
 	],
 	devServer: {
-		contentBase: path.join(__dirname, "dist"),
+		contentBase: dir("dist"),
 		historyApiFallback: true,
 		compress: true,
 		hotOnly: true,

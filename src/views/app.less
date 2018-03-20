@@ -1,13 +1,11 @@
-.danger {
-	color: #f5222d;
-	&:hover {
-		color: #ff4d4f;
+.ant-menu-horizontal {
+	.ant-menu-submenu-title:after {
+		content: "\E60B";
+		font-family: "anticon";
+		margin-left: 10px;
 	}
-}
-.primary {
-	color: #1890ff;
-	&:hover {
-		color: #40a9ff;
+	.ant-menu-submenu-open .ant-menu-submenu-title:after {
+		content: "\E60A";
 	}
 }
 .ant-table table {
@@ -15,8 +13,8 @@
 	th, td {
 		text-align: center;
 		line-height: 30px;
-		max-width: 120px;
-		min-width: 120px;
+		max-width: 130px;
+		min-width: 130px;
 		padding: 8px;
 		overflow: hidden;
 		white-space: nowrap;
@@ -28,7 +26,7 @@
 		}
 	}
 	th {
-		font-weight: 900;
+		font-weight: bold;
 	}
 }
 .main {
@@ -43,25 +41,4 @@
 }
 .wd200 {
 	width: 200px;
-}
-::-webkit-scrollbar {
-	width: 5px;
-	height: 5px;
-}
-::-webkit-scrollbar-thumb {
-	border-radius: 5px;
-	outline-offset: -1px;
-	background-color: rgba(0, 0, 0, 0.3);
-	&:hover {
-		background-color: rgba(0, 0, 0, 0.5);
-	}
-}
-::-webkit-scrollbar-track {
-	background-color: rgba(0, 0, 0, 0.1);
-	&:hover {
-		background-color: rgba(0, 0, 0, 0.2);
-	}
-}
-::-webkit-scrollbar-track-piece {
-	background-color: transparent;
 }

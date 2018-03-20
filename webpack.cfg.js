@@ -1,5 +1,5 @@
 const webpack = require("webpack");
-const UglifyJSPlugin = webpack.optimize.UglifyJsPlugin;
+const UglifyJSPlugin = require("uglifyjs-webpack-plugin");
 const CleanWebpackPlugin = require("clean-webpack-plugin");
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 
@@ -38,10 +38,7 @@ const publicConfig = {
 		// new webpack.HashedModuleIdsPlugin(),
 		new UglifyJSPlugin({
 			sourceMap: false,
-			output: { screw_ie8: false },
-			mangle: { screw_ie8: false },
-			compress: { screw_ie8: false },
-			mangleProperties: { screw_ie8: false },
+			uglifyOptions: { ie8: true },
 		}),
 		new ExtractTextPlugin(
 			"css/[name].[contenthash:5].css",

@@ -9,6 +9,7 @@
 		url("antd.svg#anticon") format("svg");
 }
 .anticon {
+	font-family: "anticon";
 	speak: none;
 	line-height: 1;
 	text-align: center;
@@ -23,10 +24,7 @@
 	-moz-osx-font-smoothing: grayscale;
 	-webkit-font-smoothing: antialiased;
 }
-.anticon {
-	font-family: "anticon";
-}
-/* [v1.11.6 -> v3.2.1]
+/* [v1.11.6 -> v3.3.0]
 "\E611"  --(1.x)->(3.x)>>  "\E606"  anticon-caret-down:before
 "\E603"  --(1.x)->(3.x)>>  "\E61D"  anticon-down:before
 "\E602"  --(1.x)->(3.x)>>  "\E61E"  anticon-up:before

@@ -1,16 +1,19 @@
 import React from "react";
 import { Select, Spin } from "antd";
+import { lower } from "../utils/fns";
 
-const NewSelect = props => {
+const WrapSelect = props => {
 	const { opts = [], optValueKey, optLabelKey, isSearch, loading, ...res } = props;
+	const id = optValueKey || "id";
+	const label = optLabelKey || "label";
 	const extra = {
-		notFoundContent: loading ? <Spin size="small" /> : null,
+		notFoundContent: loading
+			? <Spin size="small" /> : null,
 		filterOption: false,
 	};
 	if (isSearch) {
 		extra.filterOption = (value, option) =>
-			String(option.props.children).toLowerCase()
-				.indexOf(String(value).toLowerCase()) > -1;
+			lower(option.props.children).includes(lower(value));
 		extra.showSearch = true;
 		extra.allowClear = true;
 	}
@@ -18,13 +21,13 @@ const NewSelect = props => {
 		{opts.map(
 			(v, idx) => Boolean(v) &&
 				<Select.Option
-					value={v[optValueKey || "id"]}
+					value={v[id]}
 					key={idx}
 					{...v}
 				>
-					{v[optLabelKey || "label"]}
+					{v[label]}
 				</Select.Option>
 		)}
 	</Select>;
 };
-export default NewSelect;
+export default WrapSelect;

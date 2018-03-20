@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Button, Icon, InputNumber, Spin, Table, Cascader, Collapse, DatePicker, Timeline } from "antd";
 import Select from "./Select";
-import { $get } from "../utils/fns";
+import { $get } from "../utils/auth";
 import { shimAntdTable } from "../utils/antd";
 
 const OPTS = ["ActionScript", "C", "Clojure", "CoffeeScript", "CSS", "Go", "Haskell", "HTML", "Java", "JavaScript", "Lua", "Matlab", "Objective-C", "Perl", "PHP", "Python", "R", "Ruby", "Scala", "Shell", "Swift", "TeX", "TypeScript", "Vim script"].map(v => ({ id: v, label: v }));

@@ -6,29 +6,25 @@ import { URL_SELECT, formatUrl } from "../utils/fns";
 const { HTTP, HTTPS, OPTS } = URL_SELECT;
 // value 和 onChange 必须相结合使用, 否则组件的值永远为空
 const Http = props => {
-	let { addon, value, onChange, ...res } = props;
-	addon = Object.assign({
-		disabled: res.disabled,
-	}, addon);
-	let { httpDefault } = addon;
-	if (httpDefault !== HTTP) {
-		httpDefault = HTTPS;
-	}
+	const { addon, value, onChange, disabled, ...res } = props;
+	delete res.addonBefore;
+	delete addon.onChange;
+	delete addon.value;
+	let { httpDefault } = addon || {};
+	httpDefault === HTTPS || (httpDefault = HTTP);
 	let { http, link } = formatUrl(value, -1);
-	if ([HTTP, HTTPS].indexOf(http) < 0) {
-		http = httpDefault;
-	}
-	const updateSelect =
-		(v = httpDefault) => onChange(v + link);
+	[HTTP, HTTPS].includes(http) || (http = httpDefault);
+	const updateSelect = (v = httpDefault) => onChange(v + link);
 	const updateInput = e => {
-		let url = e.target.value;
+		const url = e.target.value;
 		const format = formatUrl(url, -1);
-		http = format.http || http;
+		format.http && ({ http } = format);
 		onChange(http + format.link);
 	};
 	const selector = (
 		<Select
 			onChange={updateSelect}
+			disabled={disabled}
 			value={http}
 			opts={OPTS}
 			{...addon}
@@ -37,6 +33,7 @@ const Http = props => {
 	return <Input
 		addonBefore={selector}
 		onChange={updateInput}
+		disabled={disabled}
 		value={link}
 		{...res}
 	/>;

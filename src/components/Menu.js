@@ -1,102 +1,152 @@
 import React, { Component } from "react";
-import { NavLink, withRouter } from "react-router-dom";
-import { Menu, Icon } from "antd";
+import { Link, NavLink, withRouter } from "react-router-dom";
+import { Menu, Popconfirm, Tooltip, Breadcrumb } from "antd";
+import "./Menu.less";
 
-const MARGIN_RIGHT = { marginRight: "10px" };
-const IconLabel = ({ icon, label, style }) => (
-	<span style={style}>
-		{Boolean(icon) && <Icon
-			style={MARGIN_RIGHT}
-			type={icon}
-		/>}
-		<span>{label}</span>
-	</span>
-);
-const CURSOR_NOTALOW = { cursor: "not-allowed" };
-const CURSOR_POINTER = { cursor: "pointer" };
-const CURSOR_DEFAULT = { cursor: "default" };
-const getPathName = (props, notRoute) => {
-	if (notRoute) {
-		return location.pathname;
-	} else {
-		const { pathname } = props.location || {};
-		return pathname;
-	}
+const CFG_URLS = {}; // key: { type, to, href, target, label, icon, disabled },
+const CFG_MENUS = []; // { key, type, hidden, children: [{ key, type, children, hidden }] },
+const CURSOR_DEFAULT = "default";
+const CURSOR_POINTER = "pointer";
+const CURSOR_NOTALOW = "not-allowed";
+const Icon = ({ type, className, ...res }) => {
+	let cls = className || "";
+	cls += /^\s+/.test(type) ? type
+		: " anticon anticon-" + type;
+	return <i className={cls} {...res} />;
 };
-const NewLink = props => {
-	const { disabled, to, href, children } = props;
-	let style = disabled ? CURSOR_NOTALOW : CURSOR_POINTER;
-	const res = { disabled };
-	if (href) {
-		res.href = href;
-		if (href === getPathName(props, true)) {
-			style = CURSOR_DEFAULT;
+const LinkItem =
+	({ link, pathname, cursor = CURSOR_DEFAULT, gutter = 10 }) => {
+		const { type, icon, label, title, confirm, children, ...res } = link || {};
+		const fn = res.onClick;
+		if (res.disabled) {
+			cursor = CURSOR_NOTALOW;
+		} else if (/^a$/i.test(type)) {
+			cursor = window.location.pathname === res.href
+				? CURSOR_DEFAULT : CURSOR_POINTER;
+		} else if (/^(link|navlink)$/i.test(type)) {
+			cursor = pathname === res.to
+				? CURSOR_DEFAULT : CURSOR_POINTER;
+		} else if (fn) {
+			cursor = CURSOR_POINTER;
+		} else if (/^span$/i.test(type)) {
+			cursor = CURSOR_DEFAULT;
 		}
-	} else {
-		res.to = to;
-		if (to === getPathName(props)) {
-			style = CURSOR_DEFAULT;
+		res.style = Object.assign({ cursor }, res.style);
+		if (confirm) {
+			res.onClick = e => e.preventDefault();
+		} else if (cursor !== CURSOR_POINTER) {
+			res.onClick = e => {
+				fn && fn();
+				e.preventDefault();
+			};
 		}
-	}
-	res.style = style;
-	if (style !== CURSOR_POINTER) {
-		res.onClick = e => e.preventDefault();
-	}
-	return href ? <a {...res}>{children}</a>
-		: <NavLink {...res}>{children}</NavLink>;
-};
-const RouterLink = withRouter(NewLink);
-const renderMenuItem = item => {
-	const { key, to, icon, label, ...res } = item;
-	return <Menu.Item key={key} disabled={res.disabled}>
-		<RouterLink to={to || key} {...res}>
-			{Boolean(icon) && <Icon type={icon} />}
-			<span>{label}</span>
-		</RouterLink>
-	</Menu.Item>;
-};
-const renderGroupMenu =
-	({ key, icon, label, group, ...res }) => (
-		<Menu.ItemGroup
+		const near = label ? { marginRight: gutter + "px" } : null;
+		const ico = icon ? <Icon type={icon} style={near} /> : "";
+		const txt = icon && label && typeof label === "string"
+			? <span>{label}</span> : label || "";
+		let node = /^link$/i.test(type) ? <Link {...res}>{ico}{txt}</Link>
+			: /^navlink$/i.test(type) ? <NavLink {...res}>{ico}{txt}</NavLink>
+				: /^a$/i.test(type) || fn ? <a {...res}>{ico}{txt}</a>
+					: <span {...res}>{ico}{txt}</span>;
+		if (title) {
+			const tip = {
+				title,
+				placement: "top",
+				arrowPointAtCenter: true,
+			};
+			node = <Tooltip {...tip}>{node}</Tooltip>;
+		}
+		if (confirm) {
+			const pop = {
+				placement: "topRight",
+				title: confirm,
+				arrowPointAtCenter: true,
+				cancelText: "取消",
+				okText: "确定",
+				onConfirm: fn,
+			};
+			node = <Popconfirm {...pop}>{node}</Popconfirm>;
+		}
+		return node;
+	};
+const renderMenuItem =
+	(menu, urls = CFG_URLS, pathname) => {
+		const { key, children, hidden, ...res } = menu || {};
+		const item = Object.assign({ key, to: key }, urls[key]);
+		const { disabled } = item;
+		return hidden ? false : <Menu.Item
 			key={key}
-			title={<IconLabel
-				icon={icon}
-				label={label}
-				style={CURSOR_DEFAULT}
+			disabled={disabled}
+			{...res}>
+			<LinkItem
+				key={key}
+				link={item}
+				pathname={pathname}
+				cursor={CURSOR_POINTER}
+			/>
+		</Menu.Item>;
+	};
+const renderGroupItem =
+	(menu, urls = CFG_URLS, pathname) => {
+		const { key, children, hidden, ...res } = menu || {};
+		const item = Object.assign({ key, to: key }, urls[key]);
+		const { disabled } = item;
+		return hidden ? false : <Menu.ItemGroup
+			title={<LinkItem
+				key={key}
+				link={item}
+				pathname={pathname}
 			/>}
+			key={key}
+			disabled={disabled}
 			{...res}
 		>
-			{group.map(renderMenuItem)}
-		</Menu.ItemGroup>
-	);
+			{children.map(
+				v => renderMenuItem(v, urls, pathname)
+			)}
+		</Menu.ItemGroup>;
+	};
 const renderSubMenu =
-	({ key, icon, label, sub, ...res }) => (
-		<Menu.SubMenu
-			key={key}
-			title={<IconLabel
-				icon={icon}
-				label={label}
-				style={CURSOR_POINTER}
+	(menu, urls = CFG_URLS, pathname) => {
+		const { key, children, hidden, ...res } = menu || {};
+		const item = Object.assign({ key, to: key }, urls[key]);
+		const { disabled } = item;
+		return hidden ? false : <Menu.SubMenu
+			title={<LinkItem
+				key={key}
+				link={item}
+				pathname={pathname}
+				cursor={CURSOR_POINTER}
 			/>}
+			key={key}
+			disabled={disabled}
 			{...res}
 		>
-			{sub.map(renderSubItem)}
-		</Menu.SubMenu>
-	);
-const renderGroupItem = item =>
-	item && item.group && item.group.length
-		? renderGroupMenu(item)
-		: renderMenuItem(item);
-const renderSubItem = item =>
-	item && item.sub && item.sub.length
-		? renderSubMenu(item)
-		: renderGroupItem(item);
-class NewMenu extends Component {
+			{children.map(
+				v => renderMenuList(v, urls, pathname)
+			)}
+		</Menu.SubMenu>;
+	};
+const renderGroupMenu =
+	(menu, urls = CFG_URLS, pathname) => {
+		const { type, children } = menu || {};
+		return /group/i.test(type) &&
+			children && children.length
+			? renderGroupItem(menu, urls, pathname)
+			: renderMenuItem(menu, urls, pathname);
+	};
+const renderMenuList =
+	(menu, urls = CFG_URLS, pathname) => {
+		const { type, children } = menu || {};
+		return /sub/i.test(type) &&
+			children && children.length
+			? renderSubMenu(menu, urls, pathname)
+			: renderGroupMenu(menu, urls, pathname);
+	};
+class WrapMenu extends Component {
 	constructor(props) {
 		super(props);
-		this.state = this.getKeys(
-			getPathName(props, props.notRoute)
-		);
+		this.state = this.getKeys(props);
 	};
 	getArr = arr => {
 		const res = [];
@@ -107,17 +157,35 @@ class NewMenu extends Component {
 		}
 		return res;
 	};
-	getKeys = path => {
-		const res = String(path).match(/\/[^/]+/g);
+	getKeys = props => {
+		const { urls = CFG_URLS, SubMenuEnterClose, location: { pathname } } = props;
+		let key;
+		for (let x in urls) {
+			const { type, to = x, href } = urls[x];
+			if (/^(link|navlink)$/i.test(type) &&
+				pathname === to) {
+				key = x;
+				break;
+			} else if (/^a$/i.test(type) &&
+				window.location.pathname === href) {
+				key = x;
+				break;
+			} else {
+				const idx = pathname.indexOf(to);
+				idx === 0 && (!key || key < x) && (key = x);
+			}
+		}
+		const res = (key || "").match(/\/[^/]+/g) || [];
 		return {
-			openKeys: this.getArr(res && res.slice(0, -1)),
+			openKeys: SubMenuEnterClose ? []
+				: this.getArr(res.slice(0, -1)),
 			selectedKeys: this.getArr(res),
 		};
 	};
 	keySwitch = newKeys => {
 		const { openKeys } = this.state;
 		const newKey = newKeys.find(
-			v => openKeys.indexOf(v) < 0
+			v => !openKeys.includes(v)
 		);
 		const menu = this.props.menus.find(
 			v => v.key === newKey
@@ -128,22 +196,70 @@ class NewMenu extends Component {
 		});
 	};
 	componentWillReceiveProps(newProps) {
-		this.setState(this.getKeys(
-			getPathName(newProps, newProps.notRoute)
-		));
+		this.setState(this.getKeys(newProps));
 	};
 	render() {
 		const { openKeys, selectedKeys } = this.state;
-		const { menus, ...res } = this.props;
+		const {
+			menus = CFG_MENUS,
+			urls = CFG_URLS,
+			location,
+			...res
+		} = this.props;
+		const { pathname } = location || {};
 		return <Menu
 			onOpenChange={this.keySwitch}
 			selectedKeys={selectedKeys}
 			openKeys={openKeys}
 			{...res}
 		>
-			{Boolean(menus) && menus.map(renderSubItem)}
+			{menus.map(
+				v => renderMenuList(v, urls, pathname)
+			)}
 		</Menu>;
 	};
 };
-const RouterMenu = withRouter(NewMenu);
-export default RouterMenu;
+const RouteMenu = withRouter(WrapMenu);
+const WrapBread =
+	({ list = [], ...res }) =>
+		<Breadcrumb {...res}>
+			{list.map(
+				(v, i) => {
+					v && !(i || v.icon) &&
+						(v.icon = " fa fa-map-marker");
+					return <Breadcrumb.Item key={i}>
+						<LinkItem link={v} gutter={8} />
+					</Breadcrumb.Item>;
+				}
+			)}
+		</Breadcrumb>;
+const TitleBar =
+	({ list, btns, separator }) =>
+		<div className="title-bar-wrap">
+			<WrapBread
+				list={list || []}
+				separator={separator || "/"}
+			/>
+			<div className="right-btns">
+				{btns.map((v, i) => {
+					const { icon, label, className = "", ...res } = v;
+					const link = {
+						className: className + " right-btn",
+						label: [
+							<span key="icon" className="btn-icon">
+								<Icon type={icon} />
+							</span>,
+							label,
+						],
+						...res,
+					};
+					return <LinkItem
+						cursor="pointer"
+						gutter={6}
+						link={link}
+						key={i}
+					/>;
+				})}
+			</div>
+		</div>;
+export { Icon, LinkItem, WrapMenu, RouteMenu, WrapBread, TitleBar };
