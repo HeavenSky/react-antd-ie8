@@ -66,8 +66,8 @@ export const $form =
 
 // 创建axios请求实例
 export const service = axios.create({
-	validateStatus: status => /^2\d+|304$/.test(status),
-	baseURL: "/api",
+	validateStatus: status => true,
+	baseURL: "/rest",
 	timeout: 15000,
 });
 /*

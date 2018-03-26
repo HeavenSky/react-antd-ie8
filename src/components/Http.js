@@ -7,10 +7,10 @@ const { HTTP, HTTPS, OPTS } = URL_SELECT;
 // value 和 onChange 必须相结合使用, 否则组件的值永远为空
 const Http = props => {
 	const { addon, value, onChange, disabled, ...res } = props;
+	let { httpDefault, ...more } = addon || {};
 	delete res.addonBefore;
-	delete addon.onChange;
-	delete addon.value;
-	let { httpDefault } = addon || {};
+	delete more.onChange;
+	delete more.value;
 	httpDefault === HTTPS || (httpDefault = HTTP);
 	let { http, link } = formatUrl(value, -1);
 	[HTTP, HTTPS].includes(http) || (http = httpDefault);
@@ -27,7 +27,7 @@ const Http = props => {
 			disabled={disabled}
 			value={http}
 			opts={OPTS}
-			{...addon}
+			{...more}
 		/>
 	);
 	return <Input

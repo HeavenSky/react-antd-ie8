@@ -287,6 +287,7 @@ const sorters = { status: (a, b) => a - b };
 const onChange = (pagination, filters, sorter) => 0;
 */
 const onFilter = key => (value, record) => record[key] === value;
+const onSorter = (a, b) => a > b ? 1 : a < b ? -1 : 0;
 export const formatCols = (columns, filters, sorters) =>
 	(columns || []).filter(col => {
 		const { dataIndex, filterKey = dataIndex, sorterKey = dataIndex } = col || {};
@@ -301,9 +302,9 @@ export const formatCols = (columns, filters, sorters) =>
 			col.onFilter = filterKey ? onFilter(filterKey) : null;
 		}
 		const sorter = (sorters || {})[sorterKey];
-		if (sorter) {
+		if (sorter != null) {
 			// sorter 本地模式是一个函数, 服务端模式是true
-			col.sorter = sorterKey ? sorter : true;
+			col.sorter = sorterKey ? (sorter || onSorter) : true;
 		}
 		return true;
 	});

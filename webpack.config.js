@@ -104,7 +104,15 @@ const commonConfig = {
 		]),
 		new webpack.optimize.CommonsChunkPlugin({
 			name: "runtime",
-			minChunks: Infinity,
+			minChunks: (module, count) => {
+				const { resource } = module || {};
+				return resource && /\.(vue|jsx?)$/i.test(resource) &&
+					resource.indexOf(dir("node_modules")) === 0;
+			},
+		}),
+		new webpack.optimize.CommonsChunkPlugin({
+			name: "manifest",
+			chunks: ["runtime"],
 		}),
 		/*new webpack.ContextReplacementPlugin(
 			/moment[\\/]locale$/i,
@@ -134,7 +142,7 @@ const commonConfig = {
 	},
 };
 const addPagePlugin = name => {
-	const app = name ? name + "/index" : "index";
+	const app = name || "index";
 	commonConfig.entry[app] = [
 		dir("src/views/" + app + ".js"),
 	];
@@ -142,8 +150,8 @@ const addPagePlugin = name => {
 		new HtmlWebpackPlugin({
 			filename: app + ".html",
 			template: dir("src/index.html"),
-			title: app + " Home Page",
-			chunks: ["runtime", "shim", "public", app],
+			title: "Home Page " + app,
+			chunks: ["manifest", "runtime", "shim", "public", app],
 			chunksSortMode: "manual",
 			inject: true,
 			xhtml: true,
@@ -153,6 +161,5 @@ const addPagePlugin = name => {
 };
 const pageList = [""]; // 多页面打包
 pageList.forEach(v => addPagePlugin(v));
-commonConfig.output.publicPath = pageList.length > 1 ? "/" : "./";
 
 module.exports = merge(commonConfig, currentConfig);
